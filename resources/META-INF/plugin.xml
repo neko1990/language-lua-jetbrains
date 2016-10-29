@@ -1,0 +1,64 @@
+<idea-plugin version="2">
+  <id>com.neko1990.jetbrains.lua</id>
+  <name>Language Lua Plugin</name>
+  <version>0.1</version>
+  <vendor email="neko1990@gmail.com" url="http://jetbrains-lua.neko1990.com">Nekocd</vendor>
+
+  <description>Another lua language plugin using antlr4.</description>
+
+  <change-notes><![CDATA[
+      Not released yet.<br>
+      <em>ummmmmmm</em>
+    ]]>
+  </change-notes>
+
+  <depends>com.intellij.modules.lang</depends>
+
+  <application-components>
+    <!-- Add your application components here -->
+  </application-components>
+
+  <project-components>
+    <component>
+      <implementation-class>com.neko1990.jetbrains.lua.LuaPluginController</implementation-class>
+    </component>
+  </project-components>
+
+  <idea-version since-build="141.0"/>
+
+  <depends>com.intellij.modules.lang</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <fileTypeFactory implementation="com.neko1990.jetbrains.lua.LuaFileTypeFactory"/>
+    <!--<lang.syntaxHighlighterFactory-->
+            <!--language="Lua"-->
+            <!--implementationClass="com.neko1990.jetbrains.lua.LuaSyntaxHighlighterFactory"/>-->
+
+    <!--<lang.parserDefinition-->
+            <!--language="Lua"-->
+            <!--implementationClass="com.neko1990.jetbrains.lua.LuaParserDefinition"/>-->
+
+    <!--<lang.ast.factory-->
+            <!--language="Lua"-->
+            <!--implementationClass="com.neko1990.jetbrains.lua.LuaASTFactory"/>-->
+
+    <!--<lang.psiStructureViewFactory-->
+            <!--language="Lua"-->
+            <!--implementationClass="org.antlr.jetbrains.sample.structview.SampleStructureViewFactory"/>-->
+
+    <!--<colorSettingsPage implementation="com.neko1990.jetbrains.lua.LuaColorSettingsPage"/>-->
+
+    <!--<externalAnnotator-->
+            <!--language="Lua"-->
+            <!--implementationClass="com.neko1990.jetbrains.lua.LuaExternalAnnotator"/>-->
+
+    <!--<lang.findUsagesProvider-->
+            <!--language="Lua"-->
+            <!--implementationClass="com.neko1990.jetbrains.lua.LuaFindUsagesProvider"/>-->
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>
