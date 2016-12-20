@@ -11,85 +11,150 @@ import org.antlr.jetbrains.adaptor.lexer.TokenIElementType;
 import com.neko1990.jetbrains.lua.parser.LuaLexer;
 import com.neko1990.jetbrains.lua.parser.LuaParser;
 import org.jetbrains.annotations.NotNull;
+
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 
-/** A highlighter is really just a mapping from token type to
- *  some text attributes using {@link #getTokenHighlights(IElementType)}.
- *  The reason that it returns an array, TextAttributesKey[], is
- *  that you might want to mix the attributes of a few known highlighters.
- *  A {@link TextAttributesKey} is just a name for that a theme
- *  or IDE skin can set. For example, {@link com.intellij.openapi.editor.DefaultLanguageHighlighterColors#KEYWORD}
- *  is the key that maps to what identifiers look like in the editor.
- *  To change it, see dialog: Editor > Colors & Fonts > Language Defaults.
- *
- *  From <a href="http://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/syntax_highlighting_and_error_highlighting.html">doc</a>:
- *  "The mapping of the TextAttributesKey to specific attributes used
- *  in an editor is defined by the EditorColorsScheme class, and can
- *  be configured by the user if the plugin provides an appropriate
- *  configuration interface.
- *  ...
- *  The syntax highlighter returns the {@link TextAttributesKey}
+/**
+ * A highlighter is really just a mapping from token type to
+ * some text attributes using {@link #getTokenHighlights(IElementType)}.
+ * The reason that it returns an array, TextAttributesKey[], is
+ * that you might want to mix the attributes of a few known highlighters.
+ * A {@link TextAttributesKey} is just a name for that a theme
+ * or IDE skin can set. For example, {@link com.intellij.openapi.editor.DefaultLanguageHighlighterColors#KEYWORD}
+ * is the key that maps to what identifiers look like in the editor.
+ * To change it, see dialog: Editor > Colors & Fonts > Language Defaults.
+ * <p>
+ * From <a href="http://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/syntax_highlighting_and_error_highlighting.html">doc</a>:
+ * "The mapping of the TextAttributesKey to specific attributes used
+ * in an editor is defined by the EditorColorsScheme class, and can
+ * be configured by the user if the plugin provides an appropriate
+ * configuration interface.
+ * ...
+ * The syntax highlighter returns the {@link TextAttributesKey}
  * instances for each token type which needs special highlighting.
  * For highlighting lexer errors, the standard TextAttributesKey
  * for bad characters HighlighterColors.BAD_CHARACTER can be used."
  */
 public class LuaSyntaxHighlighter extends SyntaxHighlighterBase {
-	private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
-	public static final TextAttributesKey ID =
-		createTextAttributesKey("LUA_ID", DefaultLanguageHighlighterColors.IDENTIFIER);
-	public static final TextAttributesKey KEYWORD =
-		createTextAttributesKey("LUA_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
-	public static final TextAttributesKey STRING =
-		createTextAttributesKey("LUA_STRING", DefaultLanguageHighlighterColors.STRING);
-	public static final TextAttributesKey LINE_COMMENT =
-		createTextAttributesKey("LUA_LINE_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
-	public static final TextAttributesKey BLOCK_COMMENT =
-		createTextAttributesKey("LUA_BLOCK_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
+    private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
+    public static final TextAttributesKey ID =
+            createTextAttributesKey("LUA_ID", DefaultLanguageHighlighterColors.IDENTIFIER);
+    public static final TextAttributesKey KEYWORD =
+            createTextAttributesKey("LUA_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
+    public static final TextAttributesKey STRING =
+            createTextAttributesKey("LUA_STRING", DefaultLanguageHighlighterColors.STRING);
+    public static final TextAttributesKey OPERATION_SIGN =
+            createTextAttributesKey("LUA_OPERATION_SIGN", DefaultLanguageHighlighterColors.OPERATION_SIGN);
+    public static final TextAttributesKey LINE_COMMENT =
+            createTextAttributesKey("LUA_LINE_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey BLOCK_COMMENT =
+            createTextAttributesKey("LUA_BLOCK_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
+    public static final TextAttributesKey NUMBER =
+            createTextAttributesKey("LUA_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
+    public static final TextAttributesKey DOT =
+            createTextAttributesKey("LUA_DOT", DefaultLanguageHighlighterColors.DOT);
+    public static final TextAttributesKey COMMA =
+            createTextAttributesKey("LUA_COMMA", DefaultLanguageHighlighterColors.COMMA);
+    public static final TextAttributesKey CONSTANT =
+            createTextAttributesKey("LUA_CONSTANT", DefaultLanguageHighlighterColors.CONSTANT);
+    public static final TextAttributesKey LOCAL_VARIABLE =
+            createTextAttributesKey("LUA_LOCAL_VARIABLE", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
+    public static final TextAttributesKey GLOBAL_VARIABLE =
+            createTextAttributesKey("LUA_GLOBAL_VARIABLE", DefaultLanguageHighlighterColors.GLOBAL_VARIABLE);
+    public static final TextAttributesKey FUNCTION_DECLARATION =
+            createTextAttributesKey("LUA_FUNCTION_DECLARATION", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION);
+    public static final TextAttributesKey FUNCTION_CALL =
+            createTextAttributesKey("LUA_FUNCTION_CALL", DefaultLanguageHighlighterColors.FUNCTION_CALL);
+    public static final TextAttributesKey PARAMETER =
+            createTextAttributesKey("LUA_PARAMETER", DefaultLanguageHighlighterColors.PARAMETER);
 
-	static {
-		PSIElementTypeFactory.defineLanguageIElementTypes(LuaLanguage.INSTANCE,
-		                                                  LuaParser.tokenNames,
-		                                                  LuaParser.ruleNames);
-	}
+//    public static final TextAttributesKey CLASS_NAME =
+//            createTextAttributesKey("LUA_CLASS_NAME", DefaultLanguageHighlighterColors.CLASS_NAME);
+//    public static final TextAttributesKey INTERFACE_NAME =
+//            createTextAttributesKey("LUA_INTERFACE_NAME", DefaultLanguageHighlighterColors.INTERFACE_NAME);
+//    public static final TextAttributesKey CLASS_REFERENCE =
+//            createTextAttributesKey("LUA_CLASS_REFERENCE", DefaultLanguageHighlighterColors.CLASS_REFERENCE);
+//    public static final TextAttributesKey INSTANCE_FIELD =
+//            createTextAttributesKey("LUA_INSTANCE_FIELD", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
+//    public static final TextAttributesKey INSTANCE_METHOD =
+//            createTextAttributesKey("LUA_INSTANCE_METHOD", DefaultLanguageHighlighterColors.INSTANCE_METHOD);
 
-	@NotNull
-	@Override
-	public Lexer getHighlightingLexer() {
-		LuaLexer lexer = new LuaLexer(null);
-		return new ANTLRLexerAdaptor(LuaLanguage.INSTANCE, lexer);
-	}
+    public static final TextAttributesKey STATIC_FIELD =
+            createTextAttributesKey("LUA_STATIC_FIELD", DefaultLanguageHighlighterColors.STATIC_FIELD);
+    public static final TextAttributesKey STATIC_METHOD =
+            createTextAttributesKey("LUA_STATIC_METHOD", DefaultLanguageHighlighterColors.STATIC_METHOD);
+    public static final TextAttributesKey PREDEFINED_SYMBOL =
+            createTextAttributesKey("LUA_PREDEFINED_SYMBOL", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL);
 
-	@NotNull
-	@Override
-	public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-		if ( !(tokenType instanceof TokenIElementType) ) return EMPTY_KEYS;
-		TokenIElementType myType = (TokenIElementType)tokenType;
-		int ttype = myType.getANTLRTokenType();
-		TextAttributesKey attrKey;
-		switch ( ttype ) {
-			case LuaLexer.NAME:
-				attrKey = ID;
-				break;
-			case LuaLexer.NORMALSTRING:
-			case LuaLexer.CHARSTRING:
-			case LuaLexer.LONGSTRING:
-				attrKey = STRING;
-				break;
-			case LuaLexer.INT:
-			case LuaLexer.HEX:
-			case LuaLexer.FLOAT:
-			case LuaLexer.HEX_FLOAT:
-			case LuaLexer.COMMENT:
-				attrKey = LINE_COMMENT;
-				break;
-			case LuaLexer.LINE_COMMENT:
-				attrKey = BLOCK_COMMENT;
-				break;
-			case LuaLexer.WS:
-			case LuaLexer.SHEBANG:
-			default :
-				return EMPTY_KEYS;
-		}
-		return new TextAttributesKey[] {attrKey};
-	}
+    /*
+    public static final TextAttributesKey TEMPLATE_LANGUAGE_COLOR;
+    public static final TextAttributesKey DOC_COMMENT;
+    public static final TextAttributesKey BRACES;
+    public static final TextAttributesKey SEMICOLON;
+    public static final TextAttributesKey PARENTHESES;
+    public static final TextAttributesKey BRACKETS;
+    public static final TextAttributesKey LABEL;
+    public static final TextAttributesKey DOC_COMMENT_MARKUP;
+    public static final TextAttributesKey DOC_COMMENT_TAG;
+    public static final TextAttributesKey DOC_COMMENT_TAG_VALUE;
+    public static final TextAttributesKey VALID_STRING_ESCAPE;
+    public static final TextAttributesKey INVALID_STRING_ESCAPE;
+    public static final TextAttributesKey PREDEFINED_SYMBOL;
+    public static final TextAttributesKey METADATA;
+    public static final TextAttributesKey MARKUP_TAG;
+    public static final TextAttributesKey MARKUP_ATTRIBUTE;
+    public static final TextAttributesKey MARKUP_ENTITY;
+     */
+
+
+    static {
+        PSIElementTypeFactory.defineLanguageIElementTypes(
+                LuaLanguage.INSTANCE,
+                LuaParser.tokenNames,
+                LuaParser.ruleNames);
+    }
+
+    @NotNull
+    @Override
+    public Lexer getHighlightingLexer() {
+        LuaLexer lexer = new LuaLexer(null);
+        return new ANTLRLexerAdaptor(LuaLanguage.INSTANCE, lexer);
+    }
+
+    @NotNull
+    @Override
+    public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
+        if (!(tokenType instanceof TokenIElementType)) return EMPTY_KEYS;
+        TokenIElementType myType = (TokenIElementType) tokenType;
+        int ttype = myType.getANTLRTokenType();
+        TextAttributesKey attrKey;
+        switch (ttype) {
+            case LuaLexer.NAME:
+                attrKey = ID;
+                break;
+            case LuaLexer.NORMALSTRING:
+            case LuaLexer.CHARSTRING:
+            case LuaLexer.LONGSTRING:
+                attrKey = STRING;
+                break;
+            case LuaLexer.INT:
+            case LuaLexer.HEX:
+            case LuaLexer.FLOAT:
+                attrKey = NUMBER;
+                break;
+            case LuaLexer.SHORT_COMMENT:
+                attrKey = LINE_COMMENT;
+                break;
+            case LuaLexer.LONG_COMMENT:
+                attrKey = BLOCK_COMMENT;
+                break;
+//            case LuaLexer.SHEBANG:
+//            case LuaLexer.WS:
+            default:
+                return EMPTY_KEYS;
+        }
+        return new TextAttributesKey[]{attrKey};
+    }
 }

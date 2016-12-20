@@ -30,9 +30,9 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <fileTypeFactory implementation="com.neko1990.jetbrains.lua.LuaFileTypeFactory"/>
-    <!--<lang.syntaxHighlighterFactory-->
-            <!--language="Lua"-->
-            <!--implementationClass="com.neko1990.jetbrains.lua.LuaSyntaxHighlighterFactory"/>-->
+    <lang.syntaxHighlighterFactory
+            language="Lua"
+            implementationClass="com.neko1990.jetbrains.lua.LuaSyntaxHighlighterFactory"/>
 
     <!--<lang.parserDefinition-->
             <!--language="Lua"-->

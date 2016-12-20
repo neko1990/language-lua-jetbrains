@@ -1,8 +1,7 @@
 /*
 BSD License
 
-Copyright (c) 2013, Kazunori Sakamoto
-Copyright (c) 2016, Alexander Alexeev
+Copyright (c) 2016, CaiDa
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -14,9 +13,9 @@ are met:
 2. Redistributions in binary form must reproduce the above copyright
    notice, this list of conditions and the following disclaimer in the
    documentation and/or other materials provided with the distribution.
-3. Neither the NAME of Rainer Schuster nor the NAMEs of its contributors
-   may be used to endorse or promote products derived from this software
-   without specific prior written permission.
+3. The name of its author may be used to endorse or promote products
+   derived from this software without specific prior written permission.
+
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -31,210 +30,308 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 This grammar file derived from:
+    Lua 5.1 Source Code
+    https://www.lua.org/versions.html#5.1
 
-    Lua 5.3 Reference Manual
-    http://www.lua.org/manual/5.3/manual.html
-
-    Lua 5.2 Reference Manual
-    http://www.lua.org/manual/5.2/manual.html
-
-    Lua 5.1 grammar written by Nicolai Mainiero
-    http://www.antlr3.org/grammar/1178608849736/Lua.g
-
-Tested by Kazunori Sakamoto with Test suite for Lua 5.2 (http://www.lua.org/tests/5.2/)
-
-Tested by Alexander Alexeev with Test suite for Lua 5.3 http://www.lua.org/tests/lua-5.3.2-tests.tar.gz 
+    Lua 5.3 grammar written by Kazunori Sakamoto and Alexander Alexeev
+    https://github.com/antlr/grammars-v4/blob/master/lua/Lua.g4
 */
+
 
 grammar Lua;
 
+@lexer::members {
+    public static final int SHORT_COMMENTS = 1;
+    public static final int LONG_COMMENTS = 2;
+}
+
+// Program
+file: SHEBANG? chunk EOF;
+
 chunk
-    : block EOF
+    : (stat (SEMICO)?)* (laststat (SEMICO)?)?
     ;
 
 block
-    : stat* retstat?
+    : chunk
     ;
 
 stat
-    : ';'
-    | varlist '=' explist
-    | functioncall
-    | label
-    | 'break'
-    | 'goto' NAME
-    | 'do' block 'end'
-    | 'while' exp 'do' block 'end'
-    | 'repeat' block 'until' exp
-    | 'if' exp 'then' block ('elseif' exp 'then' block)* ('else' block)? 'end'
-    | 'for' NAME '=' exp ',' exp (',' exp)? 'do' block 'end'
-    | 'for' namelist 'in' explist 'do' block 'end'
-    | 'function' funcname funcbody
-    | 'local' 'function' NAME funcbody
-    | 'local' namelist ('=' explist)?
+    : ifstat
+    | whilestat
+    | TK_DO block TK_END
+    | funcstat
+    | forstat
+    | repeatstat
+    | localfunction
+    | localstat
+    | exprstat
     ;
 
-retstat
-    : 'return' explist? ';'?
+laststat
+    : TK_RETURN exprlist?  # Return
+    | TK_BREAK # Break
     ;
 
-label
-    : '::' NAME '::'
+ifstat
+    : TK_IF cond TK_THEN block (TK_ELSEIF cond TK_THEN block)* (TK_ELSE block)? TK_END
     ;
 
-funcname
-    : NAME ('.' NAME)* (':' NAME)?
+whilestat
+    : TK_WHILE cond TK_DO block TK_END
     ;
 
-varlist
-    : var (',' var)*
+repeatstat
+    : TK_REPEAT block TK_UNTIL cond
     ;
 
-namelist
-    : NAME (',' NAME)*
+// Function
+funcstat
+    : TK_FUNCTION functionname funcbody
     ;
 
-explist
-    : exp (',' exp)*
+functionname
+    : NAME (dotfield)* colonfield?
     ;
 
-exp
-    : 'nil' | 'false' | 'true'
-    | number
-    | string
-    | '...'
-    | functiondef
-    | prefixexp
-    | tableconstructor
-    | <assoc=right> exp operatorPower exp
-    | operatorUnary exp
-    | exp operatorMulDivMod exp
-    | exp operatorAddSub exp
-    | <assoc=right> exp operatorStrcat exp
-    | exp operatorComparison exp
-    | exp operatorAnd exp
-    | exp operatorOr exp
-    | exp operatorBitwise exp
+dotfield
+    : DOT NAME
     ;
 
-prefixexp
-    : varOrExp nameAndArgs*
-    ;
-
-functioncall
-    : varOrExp nameAndArgs+
-    ;
-
-varOrExp
-    : var | '(' exp ')'
-    ;
-
-var
-    : (NAME | '(' exp ')' varSuffix) varSuffix*
-    ;
-
-varSuffix
-    : nameAndArgs* ('[' exp ']' | '.' NAME)
-    ;
-
-nameAndArgs
-    : (':' NAME)? args
-    ;
-
-/*
-var
-    : NAME | prefixexp '[' exp ']' | prefixexp '.' NAME
-    ;
-
-prefixexp
-    : var | functioncall | '(' exp ')'
-    ;
-
-functioncall
-    : prefixexp args | prefixexp ':' NAME args 
-    ;
-*/
-
-args
-    : '(' explist? ')' | tableconstructor | string
-    ;
-
-functiondef
-    : 'function' funcbody
+colonfield
+    : COLON NAME
     ;
 
 funcbody
-    : '(' parlist? ')' block 'end'
+    : LPAREN parlist RPAREN chunk TK_END
     ;
 
 parlist
-    : namelist (',' '...')? | '...'
+    : (param (COMMA param)* )?
     ;
 
-tableconstructor
-    : '{' fieldlist? '}'
+param
+    : NAME
+    | DOTS
+    ;
+// Function End //
+
+
+// For  ------
+forstat
+    : TK_FOR fornum  TK_END  # ForNumStat
+    | TK_FOR forlist TK_END  # ForListStat
     ;
 
-fieldlist
-    : field (fieldsep field)* fieldsep?
+fornum
+    : NAME EQUAL expr COMMA expr (COMMA expr)? forbody
     ;
 
-field
-    : '[' exp ']' '=' exp | NAME '=' exp | exp
+forlist
+    : NAME (COMMA NAME)? TK_IN exprlist forbody
+    ;
+
+forbody
+    : TK_DO block
+    ;
+// For End //
+
+// Local
+localfunction
+    : TK_LOCAL TK_FUNCTION NAME funcbody
+    ;
+
+localstat
+    : TK_LOCAL NAME (COMMA NAME)* (EQUAL exprlist)?
+    ;
+// Local End
+exprstat
+    : primaryexp
+    | assignstat
+    ;
+
+assignstat
+    : expr assignment
+    ;
+
+assignment
+    : COMMA primaryexp assignment
+    | EQUAL exprlist
+    ;
+
+// Expression
+cond
+    : expr
+    ;
+
+expr
+    : simpleexp # ExprSimple
+    | <assoc=right> expr OP_POW expr # ExprPow
+    | <assoc=right> expr OP_CONCAT expr # ExprConcat
+    | unop expr # ExprUnary
+    | expr op=(OP_MUL | OP_DIV | OP_MOD) expr # ExprMulDivMod
+    | expr op=(OP_ADD | OP_SUB ) expr # ExprAddSub
+    | expr op=(TK_LT | TK_LE |TK_GT | TK_GE) expr # ExprRelation
+    | expr op=(TK_EQ | TK_NEQ) expr # ExprEquality
+    | expr TK_AND expr  # ExprLogicAnd
+    | expr TK_OR expr   # ExprLogicOr
+    ;
+
+simpleexp
+    : number # ExprNumber
+    | string # ExprString
+    | TK_NIL # ExprNil
+    | FALSE  # ExprFalse
+    | TRUE   # ExprTrue
+    | DOTS   # ExprThreeDot
+    | constructor # ExprTable
+    | TK_FUNCTION funcbody # ExprFunction  // AnonymousFunction
+    | primaryexp # ExprPrimary
+    ;
+
+primaryexp
+    : prefixexp (chainexp)* # PrimaryPrefix
+    ;
+
+chainexp
+    : dotfield   # PEField
+    | yindex     # PEYindex
+    | functioncall # PrimaryFunctionCall
+    ;
+
+functioncall
+    : colonfield funcargs # FunctionCallWithSelf
+    | funcargs  # FunctionCallNormal
+    ;
+
+prefixexp
+    : NAME
+    | LPAREN expr RPAREN
+    ;
+
+exprlist
+    : expr (COMMA expr)*
+    ;
+
+funcargs
+    : LPAREN exprlist? RPAREN # FuncArgsNormal
+    | string  # FuncArgsString
+    | constructor # FuncArgsContructor
+    ;
+// ConsControl
+recfield
+    : NAME EQUAL expr
+    | yindex EQUAL expr
+    ;
+
+listfield
+    : expr
+    ;
+
+constructor
+    : LBRACE (((recfield|listfield) fieldsep)* lastfield)? RBRACE
+    ;
+
+lastfield
+    : ((recfield|listfield) fieldsep?)
     ;
 
 fieldsep
-    : ',' | ';'
+    : COMMA
+    | SEMICO
     ;
 
-operatorOr 
-	: 'or';
+// Other Field
+yindex
+    : LBRACK expr RBRACK
+    ;
 
-operatorAnd 
-	: 'and';
-
-operatorComparison 
-	: '<' | '>' | '<=' | '>=' | '~=' | '==';
-
-operatorStrcat
-	: '..';
-
-operatorAddSub
-	: '+' | '-';
-
-operatorMulDivMod
-	: '*' | '/' | '%' | '//';
-
-operatorBitwise
-	: '&' | '|' | '~' | '<<' | '>>';
-
-operatorUnary
-    : 'not' | '#' | '-' | '~';
-
-operatorPower
-    : '^';
+unop
+    : TK_NOT
+    | TK_LEN
+    | OP_SUB
+    ;
 
 number
-    : INT | HEX | FLOAT | HEX_FLOAT
+    : INT | HEX | FLOAT // HEX_FLOAT // TODO lua5.2
     ;
 
 string
     : NORMALSTRING | CHARSTRING | LONGSTRING
     ;
 
-// LEXER
+////////////// LEXER ////////////////////////
+LPAREN : '(' ;
+RPAREN : ')' ;
+COLON  : ':' ;
+COMMA  : ',' ;
+DOT    : '.' ;
+LBRACK : '[' ;
+RBRACK : ']' ;
+LBRACE : '{' ;
+RBRACE : '}' ;
+SEMICO : ';' ;
+// KEYWORD
+TK_DO     : 'do' ;
+TK_END    : 'end' ;
+TK_WHILE  : 'while' ;
+TK_REPEAT : 'repeat' ;
+TK_UNTIL  : 'until' ;
+TK_IF     : 'if' ;
+TK_THEN   : 'then' ;
+TK_ELSE   : 'else' ;
+TK_ELSEIF : 'elseif' ;
+TK_FOR    : 'for' ;
+TK_IN     : 'in';
+TK_FUNCTION : 'function' ;
+TK_LOCAL  : 'local' ;
+TK_RETURN : 'return' ;
+TK_BREAK  : 'break' ;
+TK_NIL    : 'nil' ;
+EQUAL  : '=' ;
+TRUE   : 'true' ;
+FALSE  : 'false' ;
+// BINOP
+OP_ADD : '+' ;
+OP_SUB : '-' ;
+OP_MUL : '*' ;
+OP_DIV : '/' ;
+//   IDIV: '//' ;     // TODO lua5.3
+OP_MOD : '%' ;
+OP_POW : '^' ;
+OP_CONCAT : '..' ;
+DOTS   : '...' ;
+TK_LT : '<' ;
+TK_LE : '<=' ;
+TK_GT : '>' ;
+TK_GE : '>=' ;
+TK_EQ : '==' ;
+TK_NEQ : '~=' ;
+TK_AND : 'and' ;
+TK_OR  : 'or' ;
+TK_NOT  : 'not' ;
+TK_LEN  : '#'   ;
 
 NAME
     : [a-zA-Z_][a-zA-Z_0-9]*
     ;
 
 NORMALSTRING
-    : '"' ( EscapeSequence | ~('\\'|'"') )* '"' 
+    : '"' ( EscapeSequence | ~('\\'|'"') )* '"'
     ;
 
 CHARSTRING
     : '\'' ( EscapeSequence | ~('\''|'\\') )* '\''
     ;
+
+fragment
+EscapeSequence
+    : '\\' [abfnrtvz"'\\]
+    | '\\' '\r'? '\n'
+    | DecimalEscape
+    | HexEscape
+    ;
+//    | UtfEscape  // TODO lua5.3
 
 LONGSTRING
     : '[' NESTED_STR ']'
@@ -260,47 +357,43 @@ FLOAT
     | Digit+ ExponentPart
     ;
 
-HEX_FLOAT
-    : '0' [xX] HexDigit+ '.' HexDigit* HexExponentPart?
-    | '0' [xX] '.' HexDigit+ HexExponentPart?
-    | '0' [xX] HexDigit+ HexExponentPart
-    ;
+// TODO lua5.2
+//HEX_FLOAT
+//    : '0' [xX] HexDigit+ '.' HexDigit* HexExponentPart?
+//    | '0' [xX] '.' HexDigit+ HexExponentPart?
+//    | '0' [xX] HexDigit+ HexExponentPart
+//    ;
 
 fragment
 ExponentPart
     : [eE] [+-]? Digit+
     ;
 
-fragment
-HexExponentPart
-    : [pP] [+-]? Digit+
-    ;
+// TODO lua5.2
+// HexExponentPart
+//fragment
+//HexExponentPart
+//    : [pP] [+-]? Digit+
+//    ;
 
-fragment
-EscapeSequence
-    : '\\' [abfnrtvz"'\\]
-    | '\\' '\r'? '\n'
-    | DecimalEscape
-    | HexEscape
-    | UtfEscape
-    ;
-    
+
 fragment
 DecimalEscape
     : '\\' Digit
     | '\\' Digit Digit
     | '\\' [0-2] Digit Digit
     ;
-    
+
 fragment
 HexEscape
     : '\\' 'x' HexDigit HexDigit
     ;
 
-fragment
-UtfEscape
-    : '\\' 'u{' HexDigit+ '}'
-    ;
+// TODO lua5.3
+//fragment
+//UtfEscape
+//    : '\\' 'u{' HexDigit+ '}'
+//    ;
 
 fragment
 Digit
@@ -312,22 +405,16 @@ HexDigit
     : [0-9a-fA-F]
     ;
 
-COMMENT
-    : '--[' NESTED_STR ']' -> channel(HIDDEN)
+SHORT_COMMENT
+    : '--' ~('\r'|'\n')* -> channel(HIDDEN)
     ;
-    
-LINE_COMMENT
-    : '--'
-    (                                               // --
-    | '[' '='*                                      // --[==
-    | '[' '='* ~('='|'['|'\r'|'\n') ~('\r'|'\n')*   // --[==AA
-    | ~('['|'\r'|'\n') ~('\r'|'\n')*                // --AAA
-    ) ('\r\n'|'\r'|'\n'|EOF)
-    -> channel(HIDDEN)
+
+LONG_COMMENT
+    : '--' LONGSTRING  -> channel(HIDDEN)
     ;
-    
-WS  
-    : [ \t\u000C\r\n]+ -> skip
+
+WS
+    : [ \t\r\n]+ -> channel(HIDDEN)
     ;
 
 SHEBANG
