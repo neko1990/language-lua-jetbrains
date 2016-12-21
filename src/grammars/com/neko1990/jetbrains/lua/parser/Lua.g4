@@ -114,10 +114,10 @@ param
     : NAME
     | DOTS
     ;
-// Function End //
+// Function End
 
 
-// For  ------
+// For
 forstat
     : TK_FOR fornum  TK_END  # ForNumStat
     | TK_FOR forlist TK_END  # ForListStat
@@ -134,7 +134,7 @@ forlist
 forbody
     : TK_DO block
     ;
-// For End //
+// For End
 
 // Local
 localfunction
@@ -324,15 +324,6 @@ CHARSTRING
     : '\'' ( EscapeSequence | ~('\''|'\\') )* '\''
     ;
 
-fragment
-EscapeSequence
-    : '\\' [abfnrtvz"'\\]
-    | '\\' '\r'? '\n'
-    | DecimalEscape
-    | HexEscape
-    ;
-//    | UtfEscape  // TODO lua5.3
-
 LONGSTRING
     : '[' NESTED_STR ']'
     ;
@@ -342,6 +333,15 @@ NESTED_STR
     : '=' NESTED_STR '='
     | '[' .*? ']'
     ;
+
+fragment
+EscapeSequence
+    : '\\' [abfnrtvz"'\\]
+    | '\\' '\r'? '\n'
+    | DecimalEscape
+    | HexEscape
+    ;
+//    | UtfEscape  // TODO lua5.3
 
 INT
     : Digit+
@@ -406,7 +406,7 @@ HexDigit
     ;
 
 SHORT_COMMENT
-    : '--' ~('\r'|'\n')* -> channel(HIDDEN)
+    : '--' (~('\r'|'\n'|'[') ~('\r'|'\n')*)? -> channel(HIDDEN)
     ;
 
 LONG_COMMENT
