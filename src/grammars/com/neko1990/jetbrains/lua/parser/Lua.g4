@@ -57,37 +57,22 @@ block
     ;
 
 stat
-    : ifstat
-    | whilestat
-    | TK_DO block TK_END
-    | funcstat
-    | forstat
-    | repeatstat
-    | localfunction
-    | localstat
-    | exprstat
+    : TK_IF cond TK_THEN block (TK_ELSEIF cond TK_THEN block)* (TK_ELSE block)? TK_END # IfStat
+    | TK_WHILE cond TK_DO block TK_END   # WhileStat
+    | TK_DO block TK_END                 # DoBlockStat
+    | TK_FUNCTION functionname funcbody  # FuncDeclStat
+    | TK_FOR NAME EQUAL expr COMMA expr (COMMA expr)? TK_DO block TK_END  # ForNumStat
+    | TK_FOR NAME (COMMA NAME)? TK_IN exprlist TK_DO block TK_END         # ForListStat
+    | TK_REPEAT block TK_UNTIL cond      # RepeatStat
+    | TK_LOCAL TK_FUNCTION NAME funcbody # LocalFuncDeclStat
+    | TK_LOCAL NAME (COMMA NAME)* (EQUAL exprlist)?                       # LocalVarDefStat
+    | exprstat # ExpressionStatiter
     ;
 
 laststat
-    : TK_RETURN exprlist?  # Return
-    | TK_BREAK # Break
-    ;
-
-ifstat
-    : TK_IF cond TK_THEN block (TK_ELSEIF cond TK_THEN block)* (TK_ELSE block)? TK_END
-    ;
-
-whilestat
-    : TK_WHILE cond TK_DO block TK_END
-    ;
-
-repeatstat
-    : TK_REPEAT block TK_UNTIL cond
-    ;
-
-// Function
-funcstat
-    : TK_FUNCTION functionname funcbody
+    : TK_RETURN # PlainReturn
+    | TK_RETURN exprlist # Return
+    | TK_BREAK  # Break
     ;
 
 functionname
@@ -103,60 +88,17 @@ colonfield
     ;
 
 funcbody
-    : LPAREN parlist RPAREN chunk TK_END
-    ;
-
-parlist
-    : (param (COMMA param)* )?
+    : LPAREN (param (COMMA param)* )? RPAREN chunk TK_END
     ;
 
 param
     : NAME
     | DOTS
     ;
-// Function End
 
-
-// For
-forstat
-    : TK_FOR fornum  TK_END  # ForNumStat
-    | TK_FOR forlist TK_END  # ForListStat
-    ;
-
-fornum
-    : NAME EQUAL expr COMMA expr (COMMA expr)? forbody
-    ;
-
-forlist
-    : NAME (COMMA NAME)? TK_IN exprlist forbody
-    ;
-
-forbody
-    : TK_DO block
-    ;
-// For End
-
-// Local
-localfunction
-    : TK_LOCAL TK_FUNCTION NAME funcbody
-    ;
-
-localstat
-    : TK_LOCAL NAME (COMMA NAME)* (EQUAL exprlist)?
-    ;
-// Local End
 exprstat
-    : primaryexp
-    | assignstat
-    ;
-
-assignstat
-    : expr assignment
-    ;
-
-assignment
-    : COMMA primaryexp assignment
-    | EQUAL exprlist
+    : primaryexp # PrimaryStat
+    | expr (COMMA primaryexp)* EQUAL exprlist # AssignStat
     ;
 
 // Expression
@@ -183,14 +125,14 @@ simpleexp
     | TK_NIL # ExprNil
     | FALSE  # ExprFalse
     | TRUE   # ExprTrue
-    | DOTS   # ExprThreeDot
+    | DOTS   # ExprDots
     | constructor # ExprTable
-    | TK_FUNCTION funcbody # ExprFunction  // AnonymousFunction
+    | TK_FUNCTION funcbody # ExprAnonymousFunction  // AnonymousFunction
     | primaryexp # ExprPrimary
     ;
 
 primaryexp
-    : prefixexp (chainexp)* # PrimaryPrefix
+    : prefixexp (chainexp)*
     ;
 
 chainexp
