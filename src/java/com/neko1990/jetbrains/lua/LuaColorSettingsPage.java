@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class LuaColorSettingsPage implements ColorSettingsPage {
 	private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
-		new AttributesDescriptor("Identifier", LuaSyntaxHighlighter.ID),
+		new AttributesDescriptor("Name", LuaSyntaxHighlighter.NAME),
 		new AttributesDescriptor("Keyword", LuaSyntaxHighlighter.KEYWORD),
 		new AttributesDescriptor("String", LuaSyntaxHighlighter.STRING),
 		new AttributesDescriptor("Line comment", LuaSyntaxHighlighter.LINE_COMMENT),
@@ -42,16 +42,16 @@ public class LuaColorSettingsPage implements ColorSettingsPage {
 	@Override
 	public String getDemoText() {
 		return
-			"/* block comment */\n"+
-			"func f(a:[]) {\n"+
-			"   // line comment\n"+
-			"   var i = 1\n" +
-			"   while (i < len(a)) {\n" +
+			"--[[ block comment ]]\n"+
+			"function f(a) {\n"+
+			"   -- line comment\n"+
+			"   local i = 1\n" +
+			"   if (i < #(a)) then\n" +
 			"       print(a[i])\n" +
-			"   }\n" +
+			"   end\n" +
 			"   g(\"hi mom\")\n" +
-			"}\n" +
-			"func g(c:string) { }\n";
+			"end\n" +
+			"function g(c) end\n";
 	}
 
 	@NotNull

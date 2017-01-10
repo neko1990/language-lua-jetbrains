@@ -34,19 +34,19 @@
             language="Lua"
             implementationClass="com.neko1990.jetbrains.lua.LuaSyntaxHighlighterFactory"/>
 
-    <!--<lang.parserDefinition-->
-            <!--language="Lua"-->
-            <!--implementationClass="com.neko1990.jetbrains.lua.LuaParserDefinition"/>-->
+    <lang.parserDefinition
+            language="Lua"
+            implementationClass="com.neko1990.jetbrains.lua.LuaParserDefinition"/>
 
-    <!--<lang.ast.factory-->
-            <!--language="Lua"-->
-            <!--implementationClass="com.neko1990.jetbrains.lua.LuaASTFactory"/>-->
+    <lang.ast.factory
+            language="Lua"
+            implementationClass="com.neko1990.jetbrains.lua.LuaASTFactory"/>
 
-    <!--<lang.psiStructureViewFactory-->
-            <!--language="Lua"-->
-            <!--implementationClass="org.antlr.jetbrains.sample.structview.SampleStructureViewFactory"/>-->
+    <lang.psiStructureViewFactory
+            language="Lua"
+            implementationClass="com.neko1990.jetbrains.lua.structview.LuaStructureViewFactory"/>
 
-    <!--<colorSettingsPage implementation="com.neko1990.jetbrains.lua.LuaColorSettingsPage"/>-->
+    <colorSettingsPage implementation="com.neko1990.jetbrains.lua.LuaColorSettingsPage"/>
 
     <!--<externalAnnotator-->
             <!--language="Lua"-->

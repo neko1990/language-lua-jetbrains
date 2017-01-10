@@ -40,7 +40,7 @@ public class LuaASTFactory extends CoreASTFactory {
 		if ( type instanceof TokenIElementType &&
 			 ((TokenIElementType) type).getANTLRTokenType()== LuaLexer.NAME)
 		{
-			// found an ID node; here we do not distinguish between definitions and references
+			// found an NAME node; here we do not distinguish between definitions and references
 			// because we have no context information here. All we know is that
 			// we have an identifier node that will be connected somewhere in a tree.
 			//

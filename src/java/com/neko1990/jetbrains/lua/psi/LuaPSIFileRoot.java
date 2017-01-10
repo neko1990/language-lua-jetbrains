@@ -52,9 +52,9 @@ public class LuaPSIFileRoot extends PsiFileBase implements ScopeNode {
 //		                   " at "+Integer.toHexString(element.hashCode())+")");
 		if ( element.getParent() instanceof CallSubtree ) {
 			return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
-			                           element, "/script/function/ID");
+			                           element, "/chunk/NAME");
 		}
 		return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
-		                           element, "/script/vardef/ID");
+		                           element, "/chunk/NAME");
 	}
 }

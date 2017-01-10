@@ -26,6 +26,6 @@ public class FunctionSubtree extends IdentifierDefSubtree implements ScopeNode {
 //			                   ".resolve("+myElement.getName()+
 //			                   " at "+Integer.toHexString(myElement.hashCode())+")");
 		return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
-		                           element, "/script/function/ID");
+		                           element, "/file/NAME");
 	}
 }

@@ -20,12 +20,10 @@ import org.antlr.jetbrains.adaptor.parser.ANTLRParserAdaptor;
 import org.antlr.jetbrains.adaptor.psi.ANTLRPsiNode;
 import com.neko1990.jetbrains.lua.parser.LuaLexer;
 import com.neko1990.jetbrains.lua.parser.LuaParser;
-import com.neko1990.jetbrains.lua.psi.ArgdefSubtree;
 import com.neko1990.jetbrains.lua.psi.BlockSubtree;
 import com.neko1990.jetbrains.lua.psi.CallSubtree;
 import com.neko1990.jetbrains.lua.psi.FunctionSubtree;
 import com.neko1990.jetbrains.lua.psi.LuaPSIFileRoot;
-import com.neko1990.jetbrains.lua.psi.VardefSubtree;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +34,7 @@ public class LuaParserDefinition implements ParserDefinition {
 	public static final IFileElementType FILE =
 		new IFileElementType(LuaLanguage.INSTANCE);
 
-	public static TokenIElementType ID;
+	public static TokenIElementType NAME;
 
 	static {
 		PSIElementTypeFactory.defineLanguageIElementTypes(LuaLanguage.INSTANCE,
@@ -44,14 +42,14 @@ public class LuaParserDefinition implements ParserDefinition {
 		                                                  LuaParser.ruleNames);
 		List<TokenIElementType> tokenIElementTypes =
 			PSIElementTypeFactory.getTokenIElementTypes(LuaLanguage.INSTANCE);
-		ID = tokenIElementTypes.get(LuaLexer.NAME);
+		NAME = tokenIElementTypes.get(LuaLexer.NAME);
 	}
 
 	public static final TokenSet COMMENTS =
 		PSIElementTypeFactory.createTokenSet(
 			LuaLanguage.INSTANCE,
-			LuaLexer.COMMENT,
-			LuaLexer.LINE_COMMENT);
+			LuaLexer.SHORT_COMMENT,
+			LuaLexer.LONG_COMMENT);
 
 	public static final TokenSet WHITESPACE =
 		PSIElementTypeFactory.createTokenSet(
@@ -61,7 +59,9 @@ public class LuaParserDefinition implements ParserDefinition {
 	public static final TokenSet STRING =
 		PSIElementTypeFactory.createTokenSet(
 			LuaLanguage.INSTANCE,
-			LuaLexer.NORMALSTRING);
+			LuaLexer.NORMALSTRING,
+			LuaLexer.LONGSTRING,
+			LuaLexer.CHARSTRING);
 
 	@NotNull
 	@Override
@@ -76,11 +76,12 @@ public class LuaParserDefinition implements ParserDefinition {
 		return new ANTLRParserAdaptor(LuaLanguage.INSTANCE, parser) {
 			@Override
 			protected ParseTree parse(Parser parser, IElementType root) {
-				// start rule depends on root passed in; sometimes we want to create an ID node etc...
+				// start rule depends on root passed in; sometimes we want to create an NAME node etc...
 				if ( root instanceof IFileElementType ) {
-					return ((LuaParser) parser).chunk();
+					return ((LuaParser) parser).file();
 				}
-				// let's hope it's an ID as needed by "rename function"
+				// TODO: What if root is not file elementtype, should we write all rules?
+				// let's hope it's an NAME as needed by "rename function"
 				return ((LuaParser) parser).chunk();
 			}
 		};
@@ -133,12 +134,12 @@ public class LuaParserDefinition implements ParserDefinition {
 	/** Convert from *NON-LEAF* parse node (AST they call it)
 	 *  to PSI node. Leaves are created in the AST factory.
 	 *  Rename re-factoring can cause this to be
-	 *  called on a TokenIElementType since we want to rename ID nodes.
+	 *  called on a TokenIElementType since we want to rename NAME nodes.
 	 *  In that case, this method is called to create the root node
-	 *  but with ID type. Kind of strange, but we can simply create a
+	 *  but with NAME type. Kind of strange, but we can simply create a
 	 *  ASTWrapperPsiElement to make everything work correctly.
 	 *
-	 *  RuleIElementType.  Ah! It's that ID is the root
+	 *  RuleIElementType.  Ah! It's that NAME is the root
 	 *  IElementType requested to parse, which means that the root
 	 *  node returned from parsetree->PSI conversion.  But, it
 	 *  must be a CompositeElement! The adaptor calls
@@ -163,10 +164,6 @@ public class LuaParserDefinition implements ParserDefinition {
 		switch ( ruleElType.getRuleIndex() ) {
 			case LuaParser.RULE_funcbody :
 				return new FunctionSubtree(node);
-			case LuaParser.RULE_var:
-				return new VardefSubtree(node);
-			case LuaParser.RULE_args :
-				return new ArgdefSubtree(node);
 			case LuaParser.RULE_block :
 				return new BlockSubtree(node);
 			case LuaParser.RULE_functioncall :

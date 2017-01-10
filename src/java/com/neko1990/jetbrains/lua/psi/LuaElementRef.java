@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class LuaElementRef extends PsiReferenceBase<IdentifierPSINode> {
 	public LuaElementRef(@NotNull IdentifierPSINode element) {
 		/** WARNING: You must send up the text range or you get this error:
-		 * "Cannot find manipulator for PsiElement(ID) in org.antlr.jetbrains.sample.SampleElementRef"...
+		 * "Cannot find manipulator for PsiElement(NAME) in org.antlr.jetbrains.sample.SampleElementRef"...
 		 *  when you click on an identifier.  During rename you get this
 		 *  error too if you don't impl handleElementRename().
 		 *
@@ -29,7 +29,7 @@ public abstract class LuaElementRef extends PsiReferenceBase<IdentifierPSINode> 
 		return new Object[0];
 	}
 
-	/** Change the REFERENCE's ID node (not the targeted def's ID node)
+	/** Change the REFERENCE's NAME node (not the targeted def's NAME node)
 	 *  to reflect a rename.
 	 *
 	 *  Without this method, we get an error ("Cannot find manipulator...").
@@ -45,7 +45,7 @@ public abstract class LuaElementRef extends PsiReferenceBase<IdentifierPSINode> 
 	}
 
 	/** Resolve a reference to the definition subtree (subclass of
-	 *  IdentifierDefSubtree), do not resolve to the ID child of that
+	 *  IdentifierDefSubtree), do not resolve to the NAME child of that
 	 *  definition subtree root.
 	 */
 	@Nullable
@@ -64,7 +64,7 @@ public abstract class LuaElementRef extends PsiReferenceBase<IdentifierPSINode> 
 	public boolean isReferenceTo(PsiElement def) {
 		String refName = myElement.getName();
 //		System.out.println(getClass().getSimpleName()+".isReferenceTo("+refName+"->"+def.getText()+")");
-		// sometimes def comes in pointing to ID node itself. depends on what you click on
+		// sometimes def comes in pointing to NAME node itself. depends on what you click on
 		if ( def instanceof IdentifierPSINode && isDefSubtree(def.getParent()) ) {
 			def = def.getParent();
 		}

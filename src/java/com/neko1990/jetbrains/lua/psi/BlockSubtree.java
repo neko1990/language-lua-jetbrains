@@ -23,6 +23,6 @@ public class BlockSubtree extends ANTLRPsiNode implements ScopeNode {
 //		                   " at "+Integer.toHexString(element.hashCode())+")");
 
 		return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
-		                           element, "/block/vardef/ID");
+		                           element, "/chunk/NAME");
 	}
 }
