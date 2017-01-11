@@ -15,17 +15,13 @@ import org.jetbrains.annotations.Nullable;
  */
 public class FunctionSubtree extends IdentifierDefSubtree implements ScopeNode {
 	public FunctionSubtree(@NotNull ASTNode node) {
-		// TODO: may be null;
 		super(node, node.getElementType() );
 	}
 
 	@Nullable
 	@Override
 	public PsiElement resolve(PsiNamedElement element) {
-//		System.out.println(getClass().getSimpleName()+
-//			                   ".resolve("+myElement.getName()+
-//			                   " at "+Integer.toHexString(myElement.hashCode())+")");
 		return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
-		                           element, "/file/NAME");
+		                           element, "/chunk/functionname/NAME");
 	}
 }

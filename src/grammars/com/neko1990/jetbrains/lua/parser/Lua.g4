@@ -132,13 +132,7 @@ simpleexp
     ;
 
 primaryexp
-    : prefixexp (chainexp)*
-    ;
-
-chainexp
-    : dotfield   # PEField
-    | yindex     # PEYindex
-    | functioncall # PrimaryFunctionCall
+    : prefixexp (dotfield|yindex|functioncall)*
     ;
 
 functioncall

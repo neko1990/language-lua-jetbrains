@@ -65,9 +65,13 @@ public class LuaStructureViewElement implements StructureViewTreeElement, Sortab
 	@Override
 	public TreeElement[] getChildren() {
 		if ( element instanceof LuaPSIFileRoot ) {
-			Collection<? extends PsiElement> funcs = XPath.findAll(LuaLanguage.INSTANCE, element, "/script/function/NAME");
-			List<TreeElement> treeElements = new ArrayList<>(funcs.size());
+			Collection<? extends PsiElement> funcs = XPath.findAll(LuaLanguage.INSTANCE, element, "//functionname/NAME");
+			Collection<? extends PsiElement> vars = XPath.findAll(LuaLanguage.INSTANCE, element, "//stat/NAME");
+			List<TreeElement> treeElements = new ArrayList<>(funcs.size() + vars.size());
 			for (PsiElement el : funcs) {
+				treeElements.add(new LuaStructureViewElement(el.getParent()));
+			}
+			for (PsiElement el : vars) {
 				treeElements.add(new LuaStructureViewElement(el));
 			}
 			return treeElements.toArray(new TreeElement[funcs.size()]);

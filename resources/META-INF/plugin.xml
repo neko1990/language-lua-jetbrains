@@ -48,13 +48,13 @@
 
     <colorSettingsPage implementation="com.neko1990.jetbrains.lua.LuaColorSettingsPage"/>
 
-    <!--<externalAnnotator-->
-            <!--language="Lua"-->
-            <!--implementationClass="com.neko1990.jetbrains.lua.LuaExternalAnnotator"/>-->
+    <externalAnnotator
+            language="Lua"
+            implementationClass="com.neko1990.jetbrains.lua.LuaExternalAnnotator"/>
 
-    <!--<lang.findUsagesProvider-->
-            <!--language="Lua"-->
-            <!--implementationClass="com.neko1990.jetbrains.lua.LuaFindUsagesProvider"/>-->
+    <lang.findUsagesProvider
+            language="Lua"
+            implementationClass="com.neko1990.jetbrains.lua.LuaFindUsagesProvider"/>
   </extensions>
 
   <actions>

@@ -12,6 +12,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.neko1990.jetbrains.lua.psi.*;
 import org.antlr.jetbrains.adaptor.lexer.ANTLRLexerAdaptor;
 import org.antlr.jetbrains.adaptor.lexer.PSIElementTypeFactory;
 import org.antlr.jetbrains.adaptor.lexer.RuleIElementType;
@@ -20,10 +21,6 @@ import org.antlr.jetbrains.adaptor.parser.ANTLRParserAdaptor;
 import org.antlr.jetbrains.adaptor.psi.ANTLRPsiNode;
 import com.neko1990.jetbrains.lua.parser.LuaLexer;
 import com.neko1990.jetbrains.lua.parser.LuaParser;
-import com.neko1990.jetbrains.lua.psi.BlockSubtree;
-import com.neko1990.jetbrains.lua.psi.CallSubtree;
-import com.neko1990.jetbrains.lua.psi.FunctionSubtree;
-import com.neko1990.jetbrains.lua.psi.LuaPSIFileRoot;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.jetbrains.annotations.NotNull;
@@ -162,11 +159,11 @@ public class LuaParserDefinition implements ParserDefinition {
 		}
 		RuleIElementType ruleElType = (RuleIElementType) elType;
 		switch ( ruleElType.getRuleIndex() ) {
-			case LuaParser.RULE_funcbody :
-				return new FunctionSubtree(node);
-			case LuaParser.RULE_block :
+			case LuaParser.RULE_constructor:
+				return new VardefSubtree(node);
+			case LuaParser.RULE_block:
 				return new BlockSubtree(node);
-			case LuaParser.RULE_functioncall :
+			case LuaParser.RULE_funcbody:
 				return new CallSubtree(node);
 			default :
 				return new ANTLRPsiNode(node);

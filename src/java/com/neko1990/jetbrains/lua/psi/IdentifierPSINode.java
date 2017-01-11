@@ -61,8 +61,8 @@ public class IdentifierPSINode extends ANTLRPsiLeafNode implements PsiNamedEleme
 		return this;
 	}
 
-	/** Create and return a PsiReference object associated with this NAME
-	 *  node. The reference object will be asked to resolve this ref
+	/** Create and return a PsiReference object associated with this
+	 *  `NAME node`. The reference object will be asked to resolve this ref
 	 *  by using the text of this node to identify the appropriate definition
 	 *  site. The definition site is typically a subtree for a function
 	 *  or variable definition whereas this reference is just to this NAME
@@ -78,11 +78,15 @@ public class IdentifierPSINode extends ANTLRPsiLeafNode implements PsiNamedEleme
 	public PsiReference getReference() {
 		PsiElement parent = getParent();
 		IElementType elType = parent.getNode().getElementType();
-		// do not return a reference for the NAME nodes in a definition
+		// do not return a reference for the `NAME nodes` in a definition
 		if ( elType instanceof RuleIElementType ) {
 			switch ( ((RuleIElementType) elType).getRuleIndex() ) {
-				case LuaParser.RULE_stat :
-				case LuaParser.RULE_expr :
+				case LuaParser.RULE_stat:
+				case LuaParser.RULE_dotfield:
+				case LuaParser.RULE_colonfield:
+				case LuaParser.RULE_param:
+				case LuaParser.RULE_prefixexp:
+				case LuaParser.RULE_recfield:
 					return new VariableRef(this);
 				case LuaParser.RULE_functioncall:
 					return new FunctionRef(this);
