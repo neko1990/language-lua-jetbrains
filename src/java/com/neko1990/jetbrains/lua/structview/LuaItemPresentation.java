@@ -18,7 +18,7 @@ public class LuaItemPresentation implements ItemPresentation {
 	@Nullable
 	@Override
 	public Icon getIcon(boolean unused) {
-		return LuaIcons.ACTION_ICON;
+		return LuaIcons.LUA_FUNCTION_ICON;
 	}
 
 	@Nullable
