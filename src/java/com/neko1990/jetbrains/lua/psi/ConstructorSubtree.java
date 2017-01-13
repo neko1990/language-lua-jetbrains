@@ -10,15 +10,18 @@ import org.antlr.jetbrains.adaptor.psi.ScopeNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class BlockSubtree extends ANTLRPsiNode implements ScopeNode {
-	public BlockSubtree(@NotNull ASTNode node) {
-		super(node);
-	}
+/**
+ * Created by neko1990 on 1/13/17.
+ */
+public class ConstructorSubtree extends ANTLRPsiNode implements ScopeNode {
+    public ConstructorSubtree(@NotNull ASTNode node) {
+        super(node);
+    }
 
-	@Nullable
-	@Override
-	public PsiElement resolve(PsiNamedElement element) {
-		return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
-		                           element, "/localstat/namelist/NAME");
-	}
+    @Nullable
+    @Override
+    public PsiElement resolve(PsiNamedElement element) {
+        return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
+                element, "/recfield/NAME");
+    }
 }

@@ -3,10 +3,18 @@ package com.neko1990.jetbrains.lua.structview;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.neko1990.jetbrains.lua.LuaIcons;
+import com.neko1990.jetbrains.lua.LuaLanguage;
+import com.neko1990.jetbrains.lua.psi.BlockSubtree;
+import com.neko1990.jetbrains.lua.psi.FunctionSubtree;
+import com.neko1990.jetbrains.lua.psi.LocalFunctionSubtree;
+import org.antlr.jetbrains.adaptor.lexer.RuleIElementType;
+import org.antlr.jetbrains.adaptor.xpath.XPath;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.Collection;
 
 public class LuaItemPresentation implements ItemPresentation {
 	protected final PsiElement element;
@@ -18,14 +26,36 @@ public class LuaItemPresentation implements ItemPresentation {
 	@Nullable
 	@Override
 	public Icon getIcon(boolean unused) {
-		return LuaIcons.LUA_FUNCTION_ICON;
+		if (element instanceof BlockSubtree) {
+			return LuaIcons.LUA_FILE_ICON;
+		} else if (element instanceof FunctionSubtree) {
+			return LuaIcons.LUA_FIELD_ICON;
+		} else if (element instanceof LocalFunctionSubtree) {
+			return LuaIcons.LUA_FUNCTION_ICON;
+		} else {
+			return LuaIcons.LUA_VARIABLE_ICON;
+		}
 	}
 
 	@Nullable
 	@Override
 	public String getPresentableText() {
-		ASTNode node = element.getNode();
-		return node.getText();
+		if (element instanceof BlockSubtree) {
+			return "";
+		} else if (element instanceof FunctionSubtree) {
+			for (PsiElement el : XPath.findAll(LuaLanguage.INSTANCE, element, "/functionname")) {
+				ASTNode node = el.getNode();
+				return node.getText();
+			}
+			return "";
+		} else if (element instanceof LocalFunctionSubtree) {
+			ASTNode node = element.getNode();
+			return node.getText();
+		}
+		else {
+			ASTNode node = element.getNode();
+			return node.getText();
+		}
 	}
 
 	@Nullable

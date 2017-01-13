@@ -159,13 +159,20 @@ public class LuaParserDefinition implements ParserDefinition {
 		}
 		RuleIElementType ruleElType = (RuleIElementType) elType;
 		switch ( ruleElType.getRuleIndex() ) {
-			case LuaParser.RULE_constructor:
+			case LuaParser.RULE_localstat:
+			case LuaParser.RULE_param:
 				return new VardefSubtree(node);
 			case LuaParser.RULE_block:
 				return new BlockSubtree(node);
-			case LuaParser.RULE_funcbody:
-				return new CallSubtree(node);
-			default :
+			case LuaParser.RULE_constructor:
+				return new ConstructorSubtree(node);
+			case LuaParser.RULE_functionstat:
+				return new FunctionSubtree(node);
+			case LuaParser.RULE_localfunctionstat:
+				return new LocalFunctionSubtree(node);
+			case LuaParser.RULE_forstat:
+				return new ForIterationSubtree(node);
+			default:
 				return new ANTLRPsiNode(node);
 		}
 	}

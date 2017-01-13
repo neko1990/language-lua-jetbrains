@@ -57,22 +57,70 @@ block
     ;
 
 stat
-    : TK_IF cond TK_THEN block (TK_ELSEIF cond TK_THEN block)* (TK_ELSE block)? TK_END # IfStat
-    | TK_WHILE cond TK_DO block TK_END   # WhileStat
-    | TK_DO block TK_END                 # DoBlockStat
-    | TK_FUNCTION functionname funcbody  # FuncDeclStat
-    | TK_FOR NAME EQUAL expr COMMA expr (COMMA expr)? TK_DO block TK_END  # ForNumStat
-    | TK_FOR NAME (COMMA NAME)? TK_IN exprlist TK_DO block TK_END         # ForListStat
-    | TK_REPEAT block TK_UNTIL cond      # RepeatStat
-    | TK_LOCAL TK_FUNCTION NAME funcbody # LocalFuncDeclStat
-    | TK_LOCAL NAME (COMMA NAME)* (EQUAL exprlist)?                       # LocalVarDefStat
-    | exprstat # ExpressionStatiter
+    : ifstat
+    | whilestat
+    | blockstat
+    | functionstat
+    | forstat
+    | repeatstat
+    | localfunctionstat
+    | localstat
+    | exprstat
     ;
 
 laststat
     : TK_RETURN # PlainReturn
     | TK_RETURN exprlist # Return
     | TK_BREAK  # Break
+    ;
+
+blockstat
+    : TK_DO block TK_END
+    ;
+
+ifstat
+    : TK_IF cond TK_THEN block (TK_ELSEIF cond TK_THEN block)* (TK_ELSE block)? TK_END
+    ;
+
+whilestat
+    : TK_WHILE cond TK_DO block TK_END
+    ;
+
+repeatstat
+    : TK_REPEAT block TK_UNTIL cond
+    ;
+
+// Function
+functionstat
+    : TK_FUNCTION functionname funcbody
+    ;
+
+// For
+forstat
+    : TK_FOR foriterdef forbody  TK_END
+    ;
+
+foriterdef
+    :
+    | NAME EQUAL expr COMMA expr (COMMA expr)?
+    | NAME (COMMA NAME)? TK_IN exprlist
+    ;
+
+forbody
+    : TK_DO block
+    ;
+
+// Local
+localfunctionstat
+    : TK_LOCAL TK_FUNCTION NAME funcbody
+    ;
+
+localstat
+    : TK_LOCAL namelist (EQUAL exprlist)?
+    ;
+
+namelist
+    : NAME (COMMA NAME)*
     ;
 
 functionname

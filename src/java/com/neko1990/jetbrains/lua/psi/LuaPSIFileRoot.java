@@ -47,12 +47,9 @@ public class LuaPSIFileRoot extends PsiFileBase implements ScopeNode {
 	@Nullable
 	@Override
 	public PsiElement resolve(PsiNamedElement element) {
-//		System.out.println(getClass().getSimpleName()+
-//		                   ".resolve("+element.getName()+
-//		                   " at "+Integer.toHexString(element.hashCode())+")");
 		if ( element.getParent() instanceof CallSubtree ) {
 			return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
-			                           element, "/chunk/NAME");
+					element, "/file/chunk/stat/localstat/NAME");
 		}
 		return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
 		                           element, "/chunk/NAME");

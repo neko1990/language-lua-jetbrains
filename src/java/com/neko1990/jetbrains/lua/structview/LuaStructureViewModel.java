@@ -4,6 +4,9 @@ import com.intellij.ide.structureView.StructureViewModel;
 import com.intellij.ide.structureView.StructureViewModelBase;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
+import com.neko1990.jetbrains.lua.psi.BlockSubtree;
+import com.neko1990.jetbrains.lua.psi.FunctionSubtree;
+import com.neko1990.jetbrains.lua.psi.IdentifierPSINode;
 import com.neko1990.jetbrains.lua.psi.LuaPSIFileRoot;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +31,9 @@ public class LuaStructureViewModel
 	@Override
 	public boolean isAlwaysShowsPlus(StructureViewTreeElement element) {
 		Object value = element.getValue();
-  		return value instanceof LuaPSIFileRoot;
+		return (value instanceof LuaPSIFileRoot)
+				|| (value instanceof BlockSubtree)
+				|| (value instanceof FunctionSubtree)
+				;
 	}
 }
