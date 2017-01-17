@@ -7,7 +7,6 @@ import com.intellij.psi.impl.source.tree.LeafElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.impl.source.tree.PsiCoreCommentImpl;
 import com.intellij.psi.tree.IElementType;
-import org.antlr.jetbrains.adaptor.lexer.RuleIElementType;
 import org.antlr.jetbrains.adaptor.lexer.TokenIElementType;
 import com.neko1990.jetbrains.lua.parser.LuaLexer;
 import com.neko1990.jetbrains.lua.psi.IdentifierPSINode;
@@ -27,13 +26,7 @@ public class LuaASTFactory extends CoreASTFactory {
 	 */
 	@NotNull
     @Override
-    public CompositeElement createComposite(IElementType type)
-	{
-		if (type instanceof RuleIElementType){
-			RuleIElementType ruleElType = (RuleIElementType) type;
-
-			}
-		}
+    public CompositeElement createComposite(IElementType type) {
 	    return super.createComposite(type);
     }
 
