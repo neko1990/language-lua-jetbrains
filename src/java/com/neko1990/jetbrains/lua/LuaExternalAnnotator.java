@@ -2,6 +2,8 @@ package com.neko1990.jetbrains.lua;
 
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -44,23 +46,25 @@ public class LuaExternalAnnotator extends ExternalAnnotator<PsiFile, List<LuaExt
     @Nullable
     @Override
     public List<Issue> doAnnotate(final PsiFile file) {
-        Collection<? extends PsiElement> funcNameNodes =
-                XPath.findAll(LuaLanguage.INSTANCE, file, "//functionname/NAME");
-        Collection<? extends PsiElement> funcCallNameNodes =
-                XPath.findAll(LuaLanguage.INSTANCE, file, "//functioncall/NAME");
-
-        Map<String, PsiElement> funcNames = Trees.toMap(funcNameNodes);
-        Map<String, PsiElement> funcCalls = Trees.toMap(funcCallNameNodes);
-
-        List<Issue> issues = new ArrayList<>();
-        for (String name : funcCalls.keySet()) {
-            if ( !funcNames.containsKey(name) ) {
-                Issue issue = new Issue("Unknown function: "+name, funcCalls.get(name));
-                issues.add(issue);
+        return ApplicationManager.getApplication().runReadAction((Computable<List<Issue>>) ()-> {
+            Collection<? extends PsiElement> funcNameNodes =
+                    XPath.findAll(LuaLanguage.INSTANCE, file, "//functionname/NAME");
+            Collection<? extends PsiElement> funcCallNameNodes =
+                    XPath.findAll(LuaLanguage.INSTANCE, file, "//primaryexp/primaryexp/primaryexp" );
+            // TODO: make a symtab lookup test
+            Map<String, PsiElement> funcNames = Trees.toMap(funcNameNodes);
+            Map<String, PsiElement> funcCalls = Trees.toMap(funcCallNameNodes);
+            List<Issue> issues = new ArrayList<>();
+            for (String name : funcCalls.keySet()) {
+                if (name.startsWith(".")||  name.startsWith(":") || name.startsWith("(")){
+                    continue;
+                } else if ( !funcNames.containsKey(name) ) {
+                    Issue issue = new Issue("Unknown outer function: "+name, funcCalls.get(name));
+                    issues.add(issue);
+                }
             }
-        }
-
-        return issues;
+            return issues;
+        });
     }
 
     /** Called 3rd to actually annotate the editor window */

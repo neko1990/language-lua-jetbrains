@@ -22,6 +22,6 @@ public class LocalFunctionSubtree extends IdentifierDefSubtree implements ScopeN
     @Override
     public PsiElement resolve(PsiNamedElement element) {
         return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
-                element, "/funcbody/param/NAME");
+                element, "/localfunctionstat/funcbody/param/NAME");
     }
 }

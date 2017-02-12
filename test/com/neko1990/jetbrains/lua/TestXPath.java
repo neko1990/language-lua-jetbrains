@@ -86,6 +86,20 @@ public class TestXPath extends ParsingTestCase {
         checkXPathResults(code, xpath, output);
     }
 
+//    public void testCallList() throws Exception {
+//        String code = "local y = a.b.c:d(1)";
+//        String output = "a.b.c";
+//        String xpath = "//primaryexp/!functioncall";
+//        checkXPathResults(code, xpath, output);
+//    }
+
+//    public void testCallListDeeper() throws Exception {
+//        String code = "local y = a.b.c:d(1).e:f()";
+//        String output = "a.b.c";
+//        String xpath = "//primaryexp/primaryexp";
+//        checkXPathResults(code, xpath, output);
+//    }
+
     // S U P P O R T
     protected void checkXPathResults(String code, String xpath, String allNodesText) throws IOException {
         checkXPathResults(LuaLanguage.INSTANCE, code, xpath, allNodesText);

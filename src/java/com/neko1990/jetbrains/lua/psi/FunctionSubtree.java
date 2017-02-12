@@ -22,6 +22,6 @@ public class FunctionSubtree extends IdentifierDefSubtree implements ScopeNode {
 	@Override
 	public PsiElement resolve(PsiNamedElement element) {
 		return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
-		                           element, "/funcbody/param/NAME");
+		                           element, "/functionstat/funcbody/param/NAME");
 	}
 }

@@ -19,6 +19,6 @@ public class BlockSubtree extends ANTLRPsiNode implements ScopeNode {
 	@Override
 	public PsiElement resolve(PsiNamedElement element) {
 		return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
-		                           element, "/localstat/namelist/NAME");
+		                           element, "/block/chunk/stat/localstat/namelist/NAME");
 	}
 }

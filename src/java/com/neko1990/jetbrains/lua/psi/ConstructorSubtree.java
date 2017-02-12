@@ -21,7 +21,6 @@ public class ConstructorSubtree extends ANTLRPsiNode implements ScopeNode {
     @Nullable
     @Override
     public PsiElement resolve(PsiNamedElement element) {
-        return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
-                element, "/recfield/NAME");
+        return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,element, "/constructor/(lastfield/)?recfield/NAME");
     }
 }
