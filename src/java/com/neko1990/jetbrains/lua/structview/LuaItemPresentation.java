@@ -33,7 +33,7 @@ public class LuaItemPresentation implements ItemPresentation {
 		} else if (element instanceof LocalFunctionSubtree) {
 			return LuaIcons.LUA_FUNCTION_ICON;
 		} else {
-			return LuaIcons.LUA_VARIABLE_ICON;
+			return LuaIcons.LUA_PROPERTY_ICON;
 		}
 	}
 
@@ -41,16 +41,19 @@ public class LuaItemPresentation implements ItemPresentation {
 	@Override
 	public String getPresentableText() {
 		if (element instanceof BlockSubtree) {
-			return "";
+			return "BlockSubtree";
 		} else if (element instanceof FunctionSubtree) {
-			for (PsiElement el : XPath.findAll(LuaLanguage.INSTANCE, element, "/functionname")) {
+			for (PsiElement el : XPath.findAll(LuaLanguage.INSTANCE, element, "/functionstat/functionname")) {
 				ASTNode node = el.getNode();
 				return node.getText();
 			}
-			return "";
+			return "FunctionSubtree";
 		} else if (element instanceof LocalFunctionSubtree) {
-			ASTNode node = element.getNode();
-			return node.getText();
+			for (PsiElement el : XPath.findAll(LuaLanguage.INSTANCE, element, "/localfunctionstat/NAME")) {
+				ASTNode node = el.getNode();
+				return node.getText();
+			}
+			return "LocalFunctionSubtree";
 		}
 		else {
 			ASTNode node = element.getNode();

@@ -14,9 +14,12 @@ public class LuaIcons {
     public static final Icon LUA_TOOLWINDOW_ICON = IconLoader.getIcon("/icons/file_type/lua_toolwindow.png");
     public static final Icon LUA_FILE_ICON = IconLoader.getIcon("/icons/file_type/lua.png");
     public static final Icon LUA_FUNCTION_ICON = IconLoader.getIcon("/icons/material/node/function.png");
+    public static final Icon LUA_METHOD_ICON = IconLoader.getIcon("/icons/material/node/method.png");
     public static final Icon LUA_CLASS_ICON = IconLoader.getIcon("/icons/material/node/class.png");
     public static final Icon LUA_FIELD_ICON = IconLoader.getIcon("/icons/material/node/field.png");
+    public static final Icon LUA_STATIC_ICON = IconLoader.getIcon("/icons/material/node/static.png");
     public static final Icon LUA_UPVALUE_ICON = IconLoader.getIcon("/icons/material/node/upLevel.png");
     public static final Icon LUA_VARIABLE_ICON = IconLoader.getIcon("/icons/material/node/variable.png");
+    public static final Icon LUA_PROPERTY_ICON = IconLoader.getIcon("/icons/material/node/property.png");
 
 }

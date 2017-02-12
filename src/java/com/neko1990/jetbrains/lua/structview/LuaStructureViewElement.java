@@ -13,12 +13,10 @@ import org.antlr.jetbrains.adaptor.xpath.XPath;
 import com.neko1990.jetbrains.lua.LuaLanguage;
 import com.neko1990.jetbrains.lua.psi.LuaPSIFileRoot;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.jps.builders.logging.BuildLoggingManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 public class LuaStructureViewElement implements StructureViewTreeElement, SortableTreeElement {
 	protected final PsiElement element;
@@ -65,52 +63,33 @@ public class LuaStructureViewElement implements StructureViewTreeElement, Sortab
 		return new LuaItemPresentation(element);
 	}
 
+	private TreeElement[] getChildrenByPrefix(String prefix) {
+		Collection<? extends PsiElement> funcs      = XPath.findAll(LuaLanguage.INSTANCE, element, prefix + "/chunk/stat/functionstat");
+		Collection<? extends PsiElement> localfuncs = XPath.findAll(LuaLanguage.INSTANCE, element, prefix + "/chunk/stat/localfunctionstat");
+		Collection<? extends PsiElement> upvalues   = XPath.findAll(LuaLanguage.INSTANCE, element, prefix + "/chunk/stat/localstat/namelist/NAME");
+		int size = funcs.size() + upvalues.size() +localfuncs.size();
+		List<TreeElement> treeElements = new ArrayList<>(size);
+		for (PsiElement el : funcs) {
+			treeElements.add(new LuaStructureViewElement(el));
+		}
+		for (PsiElement el : localfuncs) {
+			treeElements.add(new LuaStructureViewElement(el));
+		}
+		for (PsiElement el : upvalues) {
+			treeElements.add(new LuaStructureViewElement(el));
+		}
+		return treeElements.toArray(new TreeElement[size]);
+	}
+
 	@NotNull
 	@Override
 	public TreeElement[] getChildren() {
 		if ( element instanceof LuaPSIFileRoot ) {
-			Collection<? extends PsiElement> funcs = XPath.findAll(LuaLanguage.INSTANCE, element, "/file/chunk/stat/functionstat");
-			Collection<? extends PsiElement> localfuncs = XPath.findAll(LuaLanguage.INSTANCE, element, "/file/chunk/stat/localfunctionstat");
-			Collection<? extends PsiElement> upvalues = XPath.findAll(LuaLanguage.INSTANCE, element, "/file/chunk/stat/localstat/namelist/NAME");
-			List<TreeElement> treeElements = new ArrayList<>(funcs.size() + upvalues.size() +localfuncs.size());
-			for (PsiElement el : funcs) {
-				treeElements.add(new LuaStructureViewElement(el));
-			}
-			for (PsiElement el : localfuncs) {
-				treeElements.add(new LuaStructureViewElement(el));
-			}
-			for (PsiElement el : upvalues) {
-				treeElements.add(new LuaStructureViewElement(el));
-			}
-			return treeElements.toArray(new TreeElement[funcs.size()]);
+			return getChildrenByPrefix("/file");
 		} else if (element instanceof BlockSubtree){
-			Collection<? extends PsiElement> funcs = XPath.findAll(LuaLanguage.INSTANCE, element, "/chunk/stat/functionstat");
-			Collection<? extends PsiElement> localfuncs = XPath.findAll(LuaLanguage.INSTANCE, element, "/chunk/stat/localfunctionstat");
-			Collection<? extends PsiElement> upvalues = XPath.findAll(LuaLanguage.INSTANCE, element, "/chunk/stat/localstat/namelist/NAME");
-			List<TreeElement> treeElements = new ArrayList<>(funcs.size() + upvalues.size() +localfuncs.size());
-			for (PsiElement el : funcs) {
-				treeElements.add(new LuaStructureViewElement(el));
-			}
-			for (PsiElement el : localfuncs) {
-				treeElements.add(new LuaStructureViewElement(el));
-			}
-			for (PsiElement el : upvalues) {
-				treeElements.add(new LuaStructureViewElement(el));
-			}
+			return getChildrenByPrefix("/block");
 		} else if (element instanceof FunctionSubtree) {
-			Collection<? extends PsiElement> funcs = XPath.findAll(LuaLanguage.INSTANCE, element, "/funcbody/chunk/stat/functionstat");
-			Collection<? extends PsiElement> localfuncs = XPath.findAll(LuaLanguage.INSTANCE, element, "/funcbody/chunk/stat/localfunctionstat");
-			Collection<? extends PsiElement> upvalues = XPath.findAll(LuaLanguage.INSTANCE, element, "/funcbody/chunk/stat/localstat/namelist/NAME");
-			List<TreeElement> treeElements = new ArrayList<>(funcs.size() + upvalues.size() +localfuncs.size());
-			for (PsiElement el : funcs) {
-				treeElements.add(new LuaStructureViewElement(el));
-			}
-			for (PsiElement el : localfuncs) {
-				treeElements.add(new LuaStructureViewElement(el));
-			}
-			for (PsiElement el : upvalues) {
-				treeElements.add(new LuaStructureViewElement(el));
-			}
+			return getChildrenByPrefix("/functionstat/funcbody");
 		}
 		return new TreeElement[0];
 	}
