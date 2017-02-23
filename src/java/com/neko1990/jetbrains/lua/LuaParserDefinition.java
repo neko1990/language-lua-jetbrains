@@ -18,6 +18,7 @@ import org.antlr.jetbrains.adaptor.lexer.PSIElementTypeFactory;
 import org.antlr.jetbrains.adaptor.lexer.RuleIElementType;
 import org.antlr.jetbrains.adaptor.lexer.TokenIElementType;
 import org.antlr.jetbrains.adaptor.parser.ANTLRParserAdaptor;
+import org.antlr.jetbrains.adaptor.psi.ANTLRPsiLeafNode;
 import org.antlr.jetbrains.adaptor.psi.ANTLRPsiNode;
 import com.neko1990.jetbrains.lua.parser.LuaLexer;
 import com.neko1990.jetbrains.lua.parser.LuaParser;
@@ -152,26 +153,39 @@ public class LuaParserDefinition implements ParserDefinition {
 	public PsiElement createElement(ASTNode node) {
 		IElementType elType = node.getElementType();
 		if ( elType instanceof TokenIElementType ) {
-			return new ANTLRPsiNode(node);
+			return new ANTLRPsiLeafNode(elType,node.getText());
 		}
 		if ( !(elType instanceof RuleIElementType) ) {
 			return new ANTLRPsiNode(node);
 		}
 		RuleIElementType ruleElType = (RuleIElementType) elType;
 		switch ( ruleElType.getRuleIndex() ) {
-			case LuaParser.RULE_localstat:
-			case LuaParser.RULE_param:
-				return new VardefSubtree(node);
+			case LuaParser.RULE_ifstat:
+				return new LuaIfStatSubtree(node);
+			case LuaParser.RULE_whilestat:
+				return new LuaWhileStatSubtree(node);
 			case LuaParser.RULE_block:
-				return new BlockSubtree(node);
-			case LuaParser.RULE_constructor:
-				return new ConstructorSubtree(node);
+				return new LuaBlockSubtree(node);
 			case LuaParser.RULE_functionstat:
-				return new FunctionSubtree(node);
-			case LuaParser.RULE_localfunctionstat:
-				return new LocalFunctionSubtree(node);
+				return new LuaFunctionDefSubtree(node);
 			case LuaParser.RULE_forstat:
-				return new ForIterationSubtree(node);
+				return new LuaForIterationSubtree(node);
+			case LuaParser.RULE_repeatstat:
+				return new LuaRepeatStatSubtree(node);
+			case LuaParser.RULE_localfunctionstat:
+				return new LuaLocalFunctionDefSubtree(node);
+			case LuaParser.RULE_localstat:
+				return new LuaLocalVarDefSubtree(node);
+			// all statement except exprstat
+			case LuaParser.RULE_primaryexp:
+				return new LuaPrimaryNode(node);
+			case LuaParser.RULE_simpleexp:
+				return new LuaSimpleExprNode(node);
+			case LuaParser.RULE_constructor:
+				return new LuaTableConstructorSubtree(node);
+			// other
+			case LuaParser.RULE_functioncall:
+				return new LuaFunctionCallSubtree(node);
 			default:
 				return new ANTLRPsiNode(node);
 		}

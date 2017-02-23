@@ -1,12 +1,14 @@
 package com.neko1990.jetbrains.lua;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.neko1990.jetbrains.lua.parser.LuaParser;
-import com.neko1990.jetbrains.lua.psi.FunctionSubtree;
+import com.neko1990.jetbrains.lua.psi.LuaFunctionDefSubtree;
 import com.neko1990.jetbrains.lua.psi.IdentifierPSINode;
-import com.neko1990.jetbrains.lua.psi.VardefSubtree;
+import com.neko1990.jetbrains.lua.psi.LuaLocalFunctionDefSubtree;
+import com.neko1990.jetbrains.lua.psi.LuaLocalVarDefSubtree;
 import org.antlr.jetbrains.adaptor.lexer.RuleIElementType;
 import org.antlr.jetbrains.adaptor.psi.ANTLRPsiNode;
 import org.jetbrains.annotations.NotNull;
@@ -17,18 +19,21 @@ import org.jetbrains.annotations.Nullable;
  */
 public class LuaFindUsagesProvider implements FindUsagesProvider {
     /** Is "find usages" meaningful for a kind of definition subtree? */
+    private boolean canFindUsageDirectlyFor(ASTNode node) {
+        return node instanceof IdentifierPSINode ||
+                node instanceof LuaFunctionDefSubtree ||
+                node instanceof LuaLocalFunctionDefSubtree ||
+                node instanceof LuaLocalVarDefSubtree;
+    }
     @Override
     public boolean canFindUsagesFor(PsiElement psiElement) {
-        return psiElement instanceof IdentifierPSINode || // the case where we highlight the ID in def subtree itself
-                psiElement instanceof FunctionSubtree ||   // remaining cases are for resolve() results
-                psiElement instanceof VardefSubtree;
+        ASTNode node = psiElement.getNode();
+        return canFindUsageDirectlyFor(node);
     }
 
     @Nullable
     @Override
-    public WordsScanner getWordsScanner() {
-        return null; // null implies use SimpleWordScanner default
-    }
+    public WordsScanner getWordsScanner() { return null; }
 
     @Nullable
     @Override
@@ -41,7 +46,6 @@ public class LuaFindUsagesProvider implements FindUsagesProvider {
     @Override
     public String getType(PsiElement element) {
         // The parent of an ID node will be a RuleIElementType:
-        // function, vardef, formal_arg, statement, expr, call_expr, primary
         ANTLRPsiNode parent = (ANTLRPsiNode)element.getParent();
         RuleIElementType elType = (RuleIElementType)parent.getNode().getElementType();
         switch ( elType.getRuleIndex() ) {

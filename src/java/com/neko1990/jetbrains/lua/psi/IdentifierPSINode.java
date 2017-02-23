@@ -82,9 +82,9 @@ public class IdentifierPSINode extends ANTLRPsiLeafNode implements PsiNamedEleme
 		if ( elType instanceof RuleIElementType ) {
 			switch ( ((RuleIElementType) elType).getRuleIndex() ) {
 				case LuaParser.RULE_functioncall:
-					return new FunctionRef(this);
+					return new LuaFunctionRef(this);
 				case LuaParser.RULE_primaryexp:
-					return new VariableRef(this);
+					return new LuaVariableRef(this);
 			}
 		}
 		return null;

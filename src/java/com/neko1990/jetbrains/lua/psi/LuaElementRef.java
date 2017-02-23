@@ -77,7 +77,7 @@ public abstract class LuaElementRef extends PsiReferenceBase<IdentifierPSINode> 
 	}
 
 	/** Is the targeted def a subtree associated with this ref's kind of node?
-	 *  E.g., for a variable def, this should return true for VardefSubtree.
+	 *  E.g., for a variable def, this should return true for LuaLocalVarDefSubtree.
 	 */
 	public abstract boolean isDefSubtree(PsiElement def);
 }

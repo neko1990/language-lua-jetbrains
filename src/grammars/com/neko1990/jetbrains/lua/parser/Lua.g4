@@ -41,8 +41,8 @@ This grammar file derived from:
 grammar Lua;
 
 @lexer::members {
-    public static final int SHORT_COMMENTS = 1;
-    public static final int LONG_COMMENTS = 2;
+    public static final int SHORT_COMMENT_CHANNEL = 1;
+    public static final int LONG_COMMENT_CHANNEL = 2;
 }
 
 // Program
@@ -155,7 +155,7 @@ cond
     ;
 
 expr
-    : simpleexp # ExprSimple
+    : simpleexp # ExprSimple // Leaf of all expr
     | <assoc=right> expr OP_POW expr # ExprPow
     | <assoc=right> expr OP_CONCAT expr # ExprConcat
     | unop expr # ExprUnary
@@ -175,8 +175,12 @@ simpleexp
     | TRUE   # ExprTrue
     | DOTS   # ExprDots
     | constructor # ExprTable
-    | TK_FUNCTION funcbody # ExprAnonymousFunction  // AnonymousFunction
+    | anonymousfunction # ExprAnonymousFunction
     | primaryexp # ExprPrimary
+    ;
+
+anonymousfunction :
+    TK_FUNCTION funcbody
     ;
 
 primaryexp

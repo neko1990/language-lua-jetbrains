@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 /** A subtree associated with a function definition.
  *  Its scope is the set of arguments.
  */
-public class FunctionSubtree extends IdentifierDefSubtree implements ScopeNode {
-	public FunctionSubtree(@NotNull ASTNode node) {
+public class LuaFunctionDefSubtree extends IdentifierDefSubtree implements ScopeNode {
+	public LuaFunctionDefSubtree(@NotNull ASTNode node) {
 		super(node, node.getElementType() );
 	}
 

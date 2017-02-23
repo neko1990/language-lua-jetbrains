@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by neko1990 on 1/13/17.
  */
-public class ForIterationSubtree extends IdentifierDefSubtree implements ScopeNode {
-    public ForIterationSubtree(@NotNull ASTNode node) {
+public class LuaLocalFunctionDefSubtree extends IdentifierDefSubtree implements ScopeNode {
+    public LuaLocalFunctionDefSubtree(@NotNull ASTNode node) {
         super(node, node.getElementType() );
     }
 
@@ -22,6 +22,6 @@ public class ForIterationSubtree extends IdentifierDefSubtree implements ScopeNo
     @Override
     public PsiElement resolve(PsiNamedElement element) {
         return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
-                element, "/foriterdef/NAME");
+                element, "/localfunctionstat/funcbody/param/NAME");
     }
 }

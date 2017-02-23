@@ -19,7 +19,7 @@ public class LuaFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getName() {
-        return "Lua file";
+        return "Lua";
     }
 
     @NotNull
@@ -31,7 +31,7 @@ public class LuaFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return "Lua";
+        return "lua";
     }
 
     @Nullable

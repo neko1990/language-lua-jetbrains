@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.neko1990.jetbrains.lua.LuaLanguage;
 import org.antlr.jetbrains.adaptor.SymtabUtils;
-import org.antlr.jetbrains.adaptor.psi.ANTLRPsiNode;
+import org.antlr.jetbrains.adaptor.psi.IdentifierDefSubtree;
 import org.antlr.jetbrains.adaptor.psi.ScopeNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,14 +13,15 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by neko1990 on 1/13/17.
  */
-public class ConstructorSubtree extends ANTLRPsiNode implements ScopeNode {
-    public ConstructorSubtree(@NotNull ASTNode node) {
-        super(node);
+public class LuaForIterationSubtree extends IdentifierDefSubtree implements ScopeNode {
+    public LuaForIterationSubtree(@NotNull ASTNode node) {
+        super(node, node.getElementType() );
     }
 
     @Nullable
     @Override
     public PsiElement resolve(PsiNamedElement element) {
-        return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,element, "/constructor/(lastfield/)?recfield/NAME");
+        return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
+                element, "/foriterdef/NAME");
     }
 }

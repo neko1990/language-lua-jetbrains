@@ -4,11 +4,9 @@ import com.intellij.ide.structureView.StructureViewModel;
 import com.intellij.ide.structureView.StructureViewModelBase;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
-import com.neko1990.jetbrains.lua.psi.BlockSubtree;
-import com.neko1990.jetbrains.lua.psi.FunctionSubtree;
-import com.neko1990.jetbrains.lua.psi.IdentifierPSINode;
+import com.neko1990.jetbrains.lua.psi.LuaBlockSubtree;
+import com.neko1990.jetbrains.lua.psi.LuaFunctionDefSubtree;
 import com.neko1990.jetbrains.lua.psi.LuaPSIFileRoot;
-import org.ibex.nestedvm.util.Sort;
 import org.jetbrains.annotations.NotNull;
 
 public class LuaStructureViewModel extends StructureViewModelBase implements StructureViewModel.ElementInfoProvider {
@@ -31,8 +29,8 @@ public class LuaStructureViewModel extends StructureViewModelBase implements Str
 		Object value = element.getValue();
 		LuaStructureViewElement lua_element = (LuaStructureViewElement) element;
 		return (value instanceof LuaPSIFileRoot)
-				|| ((value instanceof BlockSubtree) && (lua_element.getChildren().length > 0))
-				|| ((value instanceof FunctionSubtree) && (lua_element.getChildren().length > 0))
+				|| ((value instanceof LuaBlockSubtree) && (lua_element.getChildren().length > 0))
+				|| ((value instanceof LuaFunctionDefSubtree) && (lua_element.getChildren().length > 0))
 				;
 	}
 }

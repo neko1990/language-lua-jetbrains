@@ -10,8 +10,8 @@ import org.antlr.jetbrains.adaptor.psi.ScopeNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class BlockSubtree extends ANTLRPsiNode implements ScopeNode {
-	public BlockSubtree(@NotNull ASTNode node) {
+public class LuaBlockSubtree extends ANTLRPsiNode implements ScopeNode {
+	public LuaBlockSubtree(@NotNull ASTNode node) {
 		super(node);
 	}
 

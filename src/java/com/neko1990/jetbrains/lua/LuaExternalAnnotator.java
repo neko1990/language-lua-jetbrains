@@ -22,7 +22,6 @@ import java.util.Map;
  */
 public class LuaExternalAnnotator extends ExternalAnnotator<PsiFile, List<LuaExternalAnnotator.Issue>> {
     // NOTE: can't use instance vars as only 1 instance
-
     public static class Issue {
         String msg;
         PsiElement offendingNode;

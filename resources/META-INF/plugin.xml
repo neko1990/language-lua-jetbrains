@@ -48,6 +48,10 @@
 
     <colorSettingsPage implementation="com.neko1990.jetbrains.lua.LuaColorSettingsPage"/>
 
+    <annotator
+            language="Lua"
+            implementationClass="com.neko1990.jetbrains.lua.LuaAnnotator"/>
+
     <externalAnnotator
             language="Lua"
             implementationClass="com.neko1990.jetbrains.lua.LuaExternalAnnotator"/>

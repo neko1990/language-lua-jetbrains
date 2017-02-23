@@ -4,8 +4,8 @@ import com.intellij.lang.ASTNode;
 import org.antlr.jetbrains.adaptor.psi.ANTLRPsiNode;
 import org.jetbrains.annotations.NotNull;
 
-public class CallSubtree extends ANTLRPsiNode {
-	public CallSubtree(@NotNull ASTNode node) {
+public class LuaFunctionCallSubtree extends ANTLRPsiNode {
+	public LuaFunctionCallSubtree(@NotNull ASTNode node) {
 		super(node);
 	}
 }

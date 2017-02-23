@@ -35,7 +35,9 @@ import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAtt
  * for bad characters HighlighterColors.BAD_CHARACTER can be used."
  */
 public class LuaSyntaxHighlighter extends SyntaxHighlighterBase {
-        private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
+    // This Highlighter only provide limited info because it is based on lexer output.
+    // For more syntax info , you must use Annotator.
+    private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
     //    public static final TextAttributesKey TEMPLATE_LANGUAGE_COLOR =
     //            createTextAttributesKey("LUA_TEMPLATE_LANGUAGE_COLOR", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
     public static final TextAttributesKey NAME =

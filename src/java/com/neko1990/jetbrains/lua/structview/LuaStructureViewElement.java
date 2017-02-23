@@ -7,8 +7,8 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
-import com.neko1990.jetbrains.lua.psi.BlockSubtree;
-import com.neko1990.jetbrains.lua.psi.FunctionSubtree;
+import com.neko1990.jetbrains.lua.psi.LuaBlockSubtree;
+import com.neko1990.jetbrains.lua.psi.LuaFunctionDefSubtree;
 import org.antlr.jetbrains.adaptor.xpath.XPath;
 import com.neko1990.jetbrains.lua.LuaLanguage;
 import com.neko1990.jetbrains.lua.psi.LuaPSIFileRoot;
@@ -86,9 +86,9 @@ public class LuaStructureViewElement implements StructureViewTreeElement, Sortab
 	public TreeElement[] getChildren() {
 		if ( element instanceof LuaPSIFileRoot ) {
 			return getChildrenByPrefix("/file");
-		} else if (element instanceof BlockSubtree){
+		} else if (element instanceof LuaBlockSubtree){
 			return getChildrenByPrefix("/block");
-		} else if (element instanceof FunctionSubtree) {
+		} else if (element instanceof LuaFunctionDefSubtree) {
 			return getChildrenByPrefix("/functionstat/funcbody");
 		}
 		return new TreeElement[0];
