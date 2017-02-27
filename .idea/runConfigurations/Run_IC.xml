@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run IC" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+    <module name="language-lua" />
+    <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -ea -Didea.is.internal=true" />
+    <option name="PROGRAM_PARAMETERS" value="" />
+    <alternative-path path="IntelliJ IDEA Community Edition IC-162.1447.26" alternative-path-enabled="false" />
+    <log_file path="$USER_HOME$/Library/Caches/IntelliJIdea2016.2/plugins-sandbox/system/log/idea.log" checked="false" skipped="true" show_all="false" alias="IDEA LOG" />
+    <method />
+  </configuration>
+</component>
