@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 
 public class LuaVariableRef extends LuaElementRef {
-	public LuaVariableRef(@NotNull IdentifierPSINode element) {
+	public LuaVariableRef(@NotNull LuaNamePSILeafNode element) {
 		super(element);
 	}
 

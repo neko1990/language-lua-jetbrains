@@ -7,9 +7,9 @@ import com.intellij.psi.impl.source.tree.LeafElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.impl.source.tree.PsiCoreCommentImpl;
 import com.intellij.psi.tree.IElementType;
+import com.neko1990.jetbrains.lua.psi.LuaNamePSILeafNode;
 import org.antlr.jetbrains.adaptor.lexer.TokenIElementType;
 import com.neko1990.jetbrains.lua.parser.LuaLexer;
-import com.neko1990.jetbrains.lua.psi.IdentifierPSINode;
 import org.jetbrains.annotations.NotNull;
 
 /** How to create parse tree nodes (Jetbrains calls them AST nodes). Later
@@ -47,7 +47,7 @@ public class LuaASTFactory extends CoreASTFactory {
 			// You can only rename, find usages, etc... on leaves implementing PsiNamedElement
 			//
 			// TODO: try not to create one for IDs under def subtree roots like vardef, function
-			return new IdentifierPSINode(type, text);
+			return new LuaNamePSILeafNode(type, text);
 		}
 		LeafElement leaf = super.createLeaf(type, text);
 		return leaf;

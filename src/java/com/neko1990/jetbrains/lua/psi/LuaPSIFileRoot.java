@@ -28,7 +28,7 @@ public class LuaPSIFileRoot extends PsiFileBase implements ScopeNode {
 
     @Override
     public String toString() {
-        return "Sample Language file";
+        return "LuaFile: {name: " + getName() + "}";
     }
 
     @Override
@@ -47,7 +47,7 @@ public class LuaPSIFileRoot extends PsiFileBase implements ScopeNode {
 	@Nullable
 	@Override
 	public PsiElement resolve(PsiNamedElement element) {
-		if ( element.getParent() instanceof LuaFunctionCallSubtree) {
+		if ( element.getParent() instanceof LuaFunctionNormalCallSubtree) {
 			return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
 					element, "/file/chunk/stat/localstat/NAME");
 		}

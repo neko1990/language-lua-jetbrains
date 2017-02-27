@@ -153,6 +153,10 @@ public class LuaParserDefinition implements ParserDefinition {
 	public PsiElement createElement(ASTNode node) {
 		IElementType elType = node.getElementType();
 		if ( elType instanceof TokenIElementType ) {
+//			switch (( (TokenIElementType) elType ).getANTLRTokenType() ) {
+//				case LuaParser.NAME:
+//					return new ANTLRPsiLeafNode(elType,node.getText());
+//			}  // It should not be a NAME node LuaASTFactory.createLeaf() already done this.
 			return new ANTLRPsiLeafNode(elType,node.getText());
 		}
 		if ( !(elType instanceof RuleIElementType) ) {
@@ -176,16 +180,18 @@ public class LuaParserDefinition implements ParserDefinition {
 				return new LuaLocalFunctionDefSubtree(node);
 			case LuaParser.RULE_localstat:
 				return new LuaLocalVarDefSubtree(node);
-			// all statement except exprstat
+			// all statement except exprstat //
 			case LuaParser.RULE_primaryexp:
 				return new LuaPrimaryNode(node);
 			case LuaParser.RULE_simpleexp:
 				return new LuaSimpleExprNode(node);
 			case LuaParser.RULE_constructor:
 				return new LuaTableConstructorSubtree(node);
-			// other
-			case LuaParser.RULE_functioncall:
-				return new LuaFunctionCallSubtree(node);
+			// other //
+			case LuaParser.RULE_normalcall:
+				return new LuaFunctionNormalCallSubtree(node);
+			case LuaParser.RULE_selfcall:
+				return new LuaFunctionSelfCallSubtree(node);
 			default:
 				return new ANTLRPsiNode(node);
 		}

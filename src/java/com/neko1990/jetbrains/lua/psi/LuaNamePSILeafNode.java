@@ -33,8 +33,8 @@ import com.neko1990.jetbrains.lua.parser.LuaParser;
  *  You can click on an NAME in the editor and ask for a rename for any node
  *  of this type.
  */
-public class IdentifierPSINode extends ANTLRPsiLeafNode implements PsiNamedElement {
-	public IdentifierPSINode(IElementType type, CharSequence text) {
+public class LuaNamePSILeafNode extends ANTLRPsiLeafNode implements PsiNamedElement {
+	public LuaNamePSILeafNode(IElementType type, CharSequence text) {
 		super(type, text);
 	}
 
@@ -81,10 +81,41 @@ public class IdentifierPSINode extends ANTLRPsiLeafNode implements PsiNamedEleme
 		// do not return a reference for the `NAME nodes` in a definition
 		if ( elType instanceof RuleIElementType ) {
 			switch ( ((RuleIElementType) elType).getRuleIndex() ) {
-				case LuaParser.RULE_functioncall:
-					return new LuaFunctionRef(this);
-				case LuaParser.RULE_primaryexp:
+				case LuaParser.RULE_functionname: // function `functionname'() end // it's a definition
+				case LuaParser.RULE_localfunctionstat: // local function `NAME'() end // it's a definition
+				case LuaParser.RULE_namelist: // local a , b = xxxxx  // [a , b] it'a definition
+					return null;
+				case LuaParser.RULE_prefixexp: // it should be resolved in global state.
 					return new LuaVariableRef(this);
+				case LuaParser.RULE_dotfield:  // part of functionname (definition) or primaryexp (index or newindex)
+					{
+						PsiElement parent2 =  parent.getParent();
+						IElementType pElType = parent2.getNode().getElementType();
+						switch (((RuleIElementType) pElType).getRuleIndex()) {
+							case LuaParser.RULE_functionname:
+								return new LuaFunctionRef(this);
+							case LuaParser.RULE_primaryexp:
+								return new LuaVariableRef(this);
+							default:
+								return null;
+						}
+					}
+				case LuaParser.RULE_colonfield:
+					{
+						IElementType pElType = parent.getParent().getNode().getElementType();
+						switch (((RuleIElementType) pElType).getRuleIndex()) {
+							case LuaParser.RULE_functionname:
+								return new LuaFunctionRef(this);
+							case LuaParser.RULE_functioncall:
+								return new LuaVariableRef(this);
+							default:
+								return null;
+						}
+					}
+				case LuaParser.RULE_foriterdef:
+					return new LuaVariableRef(this);
+				default:
+					return null;
 			}
 		}
 		return null;

@@ -9,8 +9,8 @@ import org.antlr.jetbrains.adaptor.psi.ScopeNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class LuaElementRef extends PsiReferenceBase<IdentifierPSINode> {
-	public LuaElementRef(@NotNull IdentifierPSINode element) {
+public abstract class LuaElementRef extends PsiReferenceBase<LuaNamePSILeafNode> {
+	public LuaElementRef(@NotNull LuaNamePSILeafNode element) {
 		/** WARNING: You must send up the text range or you get this error:
 		 * "Cannot find manipulator for PsiElement(NAME) in org.antlr.jetbrains.sample.SampleElementRef"...
 		 *  when you click on an identifier.  During rename you get this
@@ -51,9 +51,6 @@ public abstract class LuaElementRef extends PsiReferenceBase<IdentifierPSINode> 
 	@Nullable
 	@Override
 	public PsiElement resolve() {
-//		System.out.println(getClass().getSimpleName()+
-//		                   ".resolve("+myElement.getName()+
-//		                   " at "+Integer.toHexString(myElement.hashCode())+")");
 		ScopeNode scope = (ScopeNode)myElement.getContext();
 		if ( scope==null ) return null;
 
@@ -63,9 +60,7 @@ public abstract class LuaElementRef extends PsiReferenceBase<IdentifierPSINode> 
 	@Override
 	public boolean isReferenceTo(PsiElement def) {
 		String refName = myElement.getName();
-//		System.out.println(getClass().getSimpleName()+".isReferenceTo("+refName+"->"+def.getText()+")");
-		// sometimes def comes in pointing to NAME node itself. depends on what you click on
-		if ( def instanceof IdentifierPSINode && isDefSubtree(def.getParent()) ) {
+		if ( def instanceof LuaNamePSILeafNode && isDefSubtree(def.getParent()) ) {
 			def = def.getParent();
 		}
 		if ( isDefSubtree(def) ) {

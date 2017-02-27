@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.neko1990.jetbrains.lua.LuaLanguage;
+import com.neko1990.jetbrains.lua.luatypes.Proto;
 import org.antlr.jetbrains.adaptor.SymtabUtils;
 import org.antlr.jetbrains.adaptor.psi.IdentifierDefSubtree;
 import org.antlr.jetbrains.adaptor.psi.ScopeNode;
@@ -14,8 +15,11 @@ import org.jetbrains.annotations.Nullable;
  *  Its scope is the set of arguments.
  */
 public class LuaFunctionDefSubtree extends IdentifierDefSubtree implements ScopeNode {
+	public Proto proto;
+
 	public LuaFunctionDefSubtree(@NotNull ASTNode node) {
 		super(node, node.getElementType() );
+		//proto = new Proto(node);
 	}
 
 	@Nullable
