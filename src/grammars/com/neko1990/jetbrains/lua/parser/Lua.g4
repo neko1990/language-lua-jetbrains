@@ -97,13 +97,13 @@ functionstat
 
 // For
 forstat
-    : TK_FOR foriterdef forbody  TK_END
+    : TK_FOR foriterdef forbody TK_END
     ;
 
 foriterdef
     :
     | NAME EQUAL expr COMMA expr (COMMA expr)?
-    | NAME (COMMA NAME)? TK_IN exprlist
+    | NAME (COMMA NAME)* TK_IN exprlist
     ;
 
 forbody
@@ -188,8 +188,16 @@ primaryexp
     ;
 
 functioncall
-    : colonfield funcargs # FunctionCallWithSelf
-    | funcargs  # FunctionCallNormal
+    : selfcall
+    | normalcall
+    ;
+
+selfcall
+    : COLON NAME funcargs
+    ;
+
+normalcall
+    : funcargs
     ;
 
 prefixexp
@@ -217,11 +225,7 @@ listfield
     ;
 
 constructor
-    : LBRACE (((recfield|listfield) fieldsep)* lastfield)? RBRACE
-    ;
-
-lastfield
-    : ((recfield|listfield) fieldsep?)
+    : LBRACE ((recfield|listfield) fieldsep)* ((recfield|listfield) fieldsep?)? RBRACE
     ;
 
 fieldsep
