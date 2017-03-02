@@ -7,7 +7,7 @@ import org.antlr.jetbrains.adaptor.psi.ANTLRPsiNode;
 /**
  * Created by neko1990 on 2/23/17.
  */
-public class LuaWhileStatSubtree extends ANTLRPsiNode {
+public class LuaWhileStatSubtree extends LuaStat {
     public LuaWhileStatSubtree(ASTNode node) {
         super(node);
     }

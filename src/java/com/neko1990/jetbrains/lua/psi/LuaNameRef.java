@@ -9,17 +9,8 @@ import org.antlr.jetbrains.adaptor.psi.ScopeNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class LuaElementRef extends PsiReferenceBase<LuaNamePSILeafNode> {
-	public LuaElementRef(@NotNull LuaNamePSILeafNode element) {
-		/** WARNING: You must send up the text range or you get this error:
-		 * "Cannot find manipulator for PsiElement(NAME) in org.antlr.jetbrains.sample.SampleElementRef"...
-		 *  when you click on an identifier.  During rename you get this
-		 *  error too if you don't impl handleElementRename().
-		 *
-		 *  The range is relative to start of the token; I guess for
-		 *  qualified references we might want to use just a part of the name.
-		 *  Or we might look inside string literals for stuff.
-		 */
+public abstract class LuaNameRef extends PsiReferenceBase<LuaNamePSILeafNode> {
+	public LuaNameRef(@NotNull LuaNamePSILeafNode element) {
 		super(element, new TextRange(0, element.getText().length()));
 	}
 
@@ -38,9 +29,6 @@ public abstract class LuaElementRef extends PsiReferenceBase<LuaNamePSILeafNode>
 	 */
 	@Override
 	public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-//		System.out.println(getClass().getSimpleName()+".handleElementRename("+myElement.getName()+"->"+newElementName+
-//			                   ") on "+myElement+" at "+Integer.toHexString(myElement.hashCode()));
-
 		return myElement.setName(newElementName);
 	}
 

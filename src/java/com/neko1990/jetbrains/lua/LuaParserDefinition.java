@@ -164,6 +164,8 @@ public class LuaParserDefinition implements ParserDefinition {
 		}
 		RuleIElementType ruleElType = (RuleIElementType) elType;
 		switch ( ruleElType.getRuleIndex() ) {
+			case LuaParser.RULE_chunk:
+				return new LuaChunkSubTree(node);
 			case LuaParser.RULE_ifstat:
 				return new LuaIfStatSubtree(node);
 			case LuaParser.RULE_whilestat:
@@ -172,8 +174,8 @@ public class LuaParserDefinition implements ParserDefinition {
 				return new LuaBlockSubtree(node);
 			case LuaParser.RULE_functionstat:
 				return new LuaFunctionDefSubtree(node);
-			case LuaParser.RULE_forstat:
-				return new LuaForIterationSubtree(node);
+			case LuaParser.RULE_foriterdef:
+				return new LuaForIterationDefSubtree(node);
 			case LuaParser.RULE_repeatstat:
 				return new LuaRepeatStatSubtree(node);
 			case LuaParser.RULE_localfunctionstat:

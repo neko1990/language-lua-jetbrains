@@ -29,7 +29,13 @@
   <depends>com.intellij.modules.lang</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <fileTypeFactory implementation="com.neko1990.jetbrains.lua.LuaFileTypeFactory"/>
+    <fileTypeFactory
+            implementation="com.neko1990.jetbrains.lua.LuaFileTypeFactory"/>
+
+    <lang.ast.factory
+            language="Lua"
+            implementationClass="com.neko1990.jetbrains.lua.LuaASTFactory"/>
+
     <lang.syntaxHighlighterFactory
             language="Lua"
             implementationClass="com.neko1990.jetbrains.lua.LuaSyntaxHighlighterFactory"/>
@@ -38,15 +44,15 @@
             language="Lua"
             implementationClass="com.neko1990.jetbrains.lua.LuaParserDefinition"/>
 
-    <lang.ast.factory
-            language="Lua"
-            implementationClass="com.neko1990.jetbrains.lua.LuaASTFactory"/>
-
     <lang.psiStructureViewFactory
             language="Lua"
             implementationClass="com.neko1990.jetbrains.lua.structview.LuaStructureViewFactory"/>
 
-    <colorSettingsPage implementation="com.neko1990.jetbrains.lua.LuaColorSettingsPage"/>
+    <colorSettingsPage
+            implementation="com.neko1990.jetbrains.lua.LuaColorSettingsPage"/>
+
+    <psi.referenceContributor
+            implementation="com.neko1990.jetbrains.lua.LuaReferenceContributor"/>
 
     <annotator
             language="Lua"

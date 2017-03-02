@@ -27,8 +27,9 @@ public class LuaASTFactory extends CoreASTFactory {
 	@NotNull
     @Override
     public CompositeElement createComposite(IElementType type) {
+		// TODO: can we merge some intermediate nodes into one node, so the outcome psi tree would be simplified.
 	    return super.createComposite(type);
-    }
+	}
 
 	/** Create a parse tree (AST) leaf node from a token. Doubles as a PSI leaf node.
 	 *  Does not see whitespace tokens.  Default impl makes {@link LeafPsiElement}
@@ -45,8 +46,6 @@ public class LuaASTFactory extends CoreASTFactory {
 			// we have an identifier node that will be connected somewhere in a tree.
 			//
 			// You can only rename, find usages, etc... on leaves implementing PsiNamedElement
-			//
-			// TODO: try not to create one for IDs under def subtree roots like vardef, function
 			return new LuaNamePSILeafNode(type, text);
 		}
 		LeafElement leaf = super.createLeaf(type, text);

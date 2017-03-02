@@ -61,7 +61,7 @@ public class LuaNamePSILeafNode extends ANTLRPsiLeafNode implements PsiNamedElem
 		return this;
 	}
 
-	/** Create and return a PsiReference object associated with this
+	 /** Create and return a PsiReference object associated with this
 	 *  `NAME node`. The reference object will be asked to resolve this ref
 	 *  by using the text of this node to identify the appropriate definition
 	 *  site. The definition site is typically a subtree for a function
@@ -84,36 +84,27 @@ public class LuaNamePSILeafNode extends ANTLRPsiLeafNode implements PsiNamedElem
 				case LuaParser.RULE_functionname: // function `functionname'() end // it's a definition
 				case LuaParser.RULE_localfunctionstat: // local function `NAME'() end // it's a definition
 				case LuaParser.RULE_namelist: // local a , b = xxxxx  // [a , b] it'a definition
-					return null;
+				case LuaParser.RULE_colonfield:  // only in functionname
+				case LuaParser.RULE_recfield:
+				case LuaParser.RULE_listfield:
+				case LuaParser.RULE_foriterdef:
 				case LuaParser.RULE_prefixexp: // it should be resolved in global state.
 					return new LuaVariableRef(this);
 				case LuaParser.RULE_dotfield:  // part of functionname (definition) or primaryexp (index or newindex)
-					{
-						PsiElement parent2 =  parent.getParent();
-						IElementType pElType = parent2.getNode().getElementType();
-						switch (((RuleIElementType) pElType).getRuleIndex()) {
-							case LuaParser.RULE_functionname:
-								return new LuaFunctionRef(this);
-							case LuaParser.RULE_primaryexp:
-								return new LuaVariableRef(this);
-							default:
-								return null;
-						}
+				{
+					PsiElement parent2 =  parent.getParent();
+					IElementType pElType = parent2.getNode().getElementType();
+					switch (((RuleIElementType) pElType).getRuleIndex()) {
+						case LuaParser.RULE_functionname:
+							return null;
+						case LuaParser.RULE_primaryexp:
+							return new LuaVariableRef(this);  // this should field ref
+						default:
+							return null;
 					}
-				case LuaParser.RULE_colonfield:
-					{
-						IElementType pElType = parent.getParent().getNode().getElementType();
-						switch (((RuleIElementType) pElType).getRuleIndex()) {
-							case LuaParser.RULE_functionname:
-								return new LuaFunctionRef(this);
-							case LuaParser.RULE_functioncall:
-								return new LuaVariableRef(this);
-							default:
-								return null;
-						}
-					}
-				case LuaParser.RULE_foriterdef:
-					return new LuaVariableRef(this);
+				}
+				case LuaParser.RULE_selfcall:
+					return new LuaVariableRef(this); // should be field ref
 				default:
 					return null;
 			}

@@ -145,8 +145,12 @@ param
     ;
 
 exprstat
-    : primaryexp # PrimaryStat
-    | expr (COMMA primaryexp)* EQUAL exprlist # AssignStat
+    : primaryexp
+    | assignexpr
+    ;
+
+assignexpr
+    : expr (COMMA primaryexp)* EQUAL exprlist
     ;
 
 // Expression

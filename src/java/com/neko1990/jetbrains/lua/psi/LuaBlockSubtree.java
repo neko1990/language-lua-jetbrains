@@ -10,7 +10,7 @@ import org.antlr.jetbrains.adaptor.psi.ScopeNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class LuaBlockSubtree extends ANTLRPsiNode implements ScopeNode {
+public class LuaBlockSubtree extends LuaStat implements ScopeNode {
 	public LuaBlockSubtree(@NotNull ASTNode node) {
 		super(node);
 	}

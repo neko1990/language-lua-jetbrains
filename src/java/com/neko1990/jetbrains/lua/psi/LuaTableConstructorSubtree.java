@@ -21,6 +21,11 @@ public class LuaTableConstructorSubtree extends ANTLRPsiNode implements ScopeNod
     @Nullable
     @Override
     public PsiElement resolve(PsiNamedElement element) {
-        return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,element, "/constructor/(lastfield/)?recfield/NAME");
+        PsiElement result =  SymtabUtils.resolve(this, LuaLanguage.INSTANCE,element, "/constructor/recfield/NAME");
+        if (result != null) {
+            return result;
+        } else {
+            return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,element, "/constructor/listfield/NAME");
+        }
     }
 }
