@@ -65,12 +65,13 @@ stat
     | repeatstat
     | localfunctionstat
     | localstat
-    | exprstat
+    | primaryexp
+    | assignexpr
     ;
 
 laststat
     : TK_RETURN # PlainReturn
-    | TK_RETURN exprlist # Return
+    | TK_RETURN expr (COMMA expr)* # Return
     | TK_BREAK  # Break
     ;
 
@@ -103,7 +104,7 @@ forstat
 foriterdef
     :
     | NAME EQUAL expr COMMA expr (COMMA expr)?
-    | NAME (COMMA NAME)* TK_IN exprlist
+    | NAME (COMMA NAME)* TK_IN  expr (COMMA expr)*
     ;
 
 forbody
@@ -116,7 +117,7 @@ localfunctionstat
     ;
 
 localstat
-    : TK_LOCAL namelist (EQUAL exprlist)?
+    : TK_LOCAL namelist (EQUAL expr (COMMA expr)* )?
     ;
 
 namelist
@@ -144,13 +145,8 @@ param
     | DOTS
     ;
 
-exprstat
-    : primaryexp
-    | assignexpr
-    ;
-
 assignexpr
-    : expr (COMMA primaryexp)* EQUAL exprlist
+    : expr (COMMA primaryexp)* EQUAL expr (COMMA expr)*
     ;
 
 // Expression
@@ -159,7 +155,15 @@ cond
     ;
 
 expr
-    : simpleexp # ExprSimple // Leaf of all expr
+    : number # ExprNumber
+    | string # ExprString
+    | TK_NIL # ExprNil
+    | FALSE  # ExprFalse
+    | TRUE   # ExprTrue
+    | DOTS   # ExprDots
+    | constructor # ExprTable
+    | TK_FUNCTION funcbody # ExprAnonymousFunction
+    | primaryexp # ExprPrimary
     | <assoc=right> expr OP_POW expr # ExprPow
     | <assoc=right> expr OP_CONCAT expr # ExprConcat
     | unop expr # ExprUnary
@@ -171,37 +175,8 @@ expr
     | expr TK_OR expr   # ExprLogicOr
     ;
 
-simpleexp
-    : number # ExprNumber
-    | string # ExprString
-    | TK_NIL # ExprNil
-    | FALSE  # ExprFalse
-    | TRUE   # ExprTrue
-    | DOTS   # ExprDots
-    | constructor # ExprTable
-    | anonymousfunction # ExprAnonymousFunction
-    | primaryexp # ExprPrimary
-    ;
-
-anonymousfunction :
-    TK_FUNCTION funcbody
-    ;
-
 primaryexp
-    : prefixexp (dotfield|yindex|functioncall)*
-    ;
-
-functioncall
-    : selfcall
-    | normalcall
-    ;
-
-selfcall
-    : COLON NAME funcargs
-    ;
-
-normalcall
-    : funcargs
+    : prefixexp (dotfield|yindex|COLON NAME funcargs|funcargs)*
     ;
 
 prefixexp
@@ -209,12 +184,8 @@ prefixexp
     | LPAREN expr RPAREN
     ;
 
-exprlist
-    : expr (COMMA expr)*
-    ;
-
 funcargs
-    : LPAREN exprlist? RPAREN # FuncArgsNormal
+    : LPAREN (expr (COMMA expr)*)? RPAREN # FuncArgsNormal
     | string  # FuncArgsString
     | constructor # FuncArgsContructor
     ;

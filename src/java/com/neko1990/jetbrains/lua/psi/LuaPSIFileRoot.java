@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class LuaPSIFileRoot extends PsiFileBase implements ScopeNode {
+public class LuaPSIFileRoot extends PsiFileBase {
     public LuaPSIFileRoot(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, LuaLanguage.INSTANCE);
     }
@@ -35,23 +35,4 @@ public class LuaPSIFileRoot extends PsiFileBase implements ScopeNode {
     public Icon getIcon(int flags) {
         return LuaIcons.LUA_FILE_ICON;
     }
-
-	/** Return null since a file scope has no enclosing scope. It is
-	 *  not itself in a scope.
-	 */
-	@Override
-	public ScopeNode getContext() {
-		return null;
-	}
-
-	@Nullable
-	@Override
-	public PsiElement resolve(PsiNamedElement element) {
-		if ( element.getParent() instanceof LuaFunctionNormalCallSubtree) {
-			return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
-					element, "/file/chunk/stat/localstat/NAME");
-		}
-		return SymtabUtils.resolve(this, LuaLanguage.INSTANCE,
-		                           element, "/chunk/NAME");
-	}
 }

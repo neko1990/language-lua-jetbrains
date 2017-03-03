@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by neko1990 on 3/2/17.
  */
-public abstract class LuaStat extends ANTLRPsiNode {
+public abstract class LuaStat extends LuaPsiNode {
     public LuaStat(@NotNull ASTNode node) {
         super(node);
     }

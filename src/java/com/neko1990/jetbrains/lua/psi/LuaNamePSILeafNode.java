@@ -103,8 +103,6 @@ public class LuaNamePSILeafNode extends ANTLRPsiLeafNode implements PsiNamedElem
 							return null;
 					}
 				}
-				case LuaParser.RULE_selfcall:
-					return new LuaVariableRef(this); // should be field ref
 				default:
 					return null;
 			}

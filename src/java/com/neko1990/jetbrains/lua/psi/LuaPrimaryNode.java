@@ -7,7 +7,7 @@ import org.antlr.jetbrains.adaptor.psi.ANTLRPsiNode;
 /**
  * Created by neko1990 on 2/23/17.
  */
-public class LuaPrimaryNode extends ANTLRPsiNode{
+public class LuaPrimaryNode extends LuaPsiNode {
     public LuaPrimaryNode(ASTNode node) {
         super(node);
     }

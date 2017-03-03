@@ -129,6 +129,11 @@ public class LuaParserDefinition implements ParserDefinition {
 		return new LuaPSIFileRoot(viewProvider);
 	}
 
+	@NotNull
+	public PsiElement createLuaExpr(ASTNode node) {
+		return new LuaSimpleExprNode(node);
+	}
+
 	/** Convert from *NON-LEAF* parse node (AST they call it)
 	 *  to PSI node. Leaves are created in the AST factory.
 	 *  Rename re-factoring can cause this to be
@@ -171,29 +176,30 @@ public class LuaParserDefinition implements ParserDefinition {
 			case LuaParser.RULE_whilestat:
 				return new LuaWhileStatSubtree(node);
 			case LuaParser.RULE_block:
-				return new LuaBlockSubtree(node);
+				return new LuaBlockStatSubtree(node);
 			case LuaParser.RULE_functionstat:
 				return new LuaFunctionDefSubtree(node);
-			case LuaParser.RULE_foriterdef:
-				return new LuaForIterationDefSubtree(node);
+			case LuaParser.RULE_forstat:
+				return new LuaForSubtree(node);
 			case LuaParser.RULE_repeatstat:
 				return new LuaRepeatStatSubtree(node);
 			case LuaParser.RULE_localfunctionstat:
 				return new LuaLocalFunctionDefSubtree(node);
 			case LuaParser.RULE_localstat:
 				return new LuaLocalVarDefSubtree(node);
+			/////////////////////////////////////////////////
+			case LuaParser.RULE_foriterdef:
+				return new LuaForIterationDefSubtree(node);
 			// all statement except exprstat //
+			case LuaParser.RULE_assignexpr:
+				return new LuaAssign(node);
 			case LuaParser.RULE_primaryexp:
 				return new LuaPrimaryNode(node);
-			case LuaParser.RULE_simpleexp:
-				return new LuaSimpleExprNode(node);
+			/////////////////////////////////////////////////
+			case LuaParser.RULE_expr:
+				return createLuaExpr(node);
 			case LuaParser.RULE_constructor:
 				return new LuaTableConstructorSubtree(node);
-			// other //
-			case LuaParser.RULE_normalcall:
-				return new LuaFunctionNormalCallSubtree(node);
-			case LuaParser.RULE_selfcall:
-				return new LuaFunctionSelfCallSubtree(node);
 			default:
 				return new ANTLRPsiNode(node);
 		}

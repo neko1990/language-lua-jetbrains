@@ -80,7 +80,7 @@ public class LuaFindUsagesProvider implements FindUsagesProvider {
         ANTLRPsiNode parent = (ANTLRPsiNode)element.getParent();
         RuleIElementType elType = (RuleIElementType)parent.getNode().getElementType();
         switch ( elType.getRuleIndex() ) {
-            case RULE_functioncall:
+            case RULE_functionname:
                 return "function";
             case RULE_primaryexp:
                 return "variable";
